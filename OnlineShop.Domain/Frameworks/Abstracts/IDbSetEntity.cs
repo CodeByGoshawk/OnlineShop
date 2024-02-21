@@ -1,5 +1,5 @@
-﻿namespace OnlineShop.EFCore.Frameworks.Abstracts;
+﻿namespace OnlineShop.Domain.Frameworks.Abstracts;
 
-internal interface IDbSetEntity
+public interface IDbSetEntity
 {
 }
