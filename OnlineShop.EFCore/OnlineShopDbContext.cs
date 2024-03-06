@@ -5,11 +5,12 @@ using OnlineShop.EFCore.Frameworks;
 using OnlineShop.Domain.Frameworks.Abstracts;
 using System.Reflection;
 using PublicTools.Constants;
-
+using OnlineShop.Domain.Aggregates.UserManagementAggregates;
+using OnlineShop.Domain.Aggregates.SaleAggregates;
 namespace OnlineShop.EFCore;
 
-public class OnlineShopDbContext(DbContextOptions options) : IdentityDbContext<IdentityUser, IdentityRole, string,
-        IdentityUserClaim<string>, IdentityUserRole<string> , IdentityUserLogin<string>,
+public class OnlineShopDbContext(DbContextOptions options) : IdentityDbContext<OnlineShopUser, OnlineShopRole, string,
+        IdentityUserClaim<string>, OnlineShopUserRole , IdentityUserLogin<string>,
         IdentityRoleClaim<string>, IdentityUserToken<string>>(options)
 {
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
@@ -22,6 +23,10 @@ public class OnlineShopDbContext(DbContextOptions options) : IdentityDbContext<I
         builder.HasDefaultSchema(DatabaseConstants.Schemas.UserManagement);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         builder.RegisterAllEntities<IDbSetEntity>(typeof(IDbSetEntity).Assembly);
+
+        builder.Entity<OrderHeader>().HasOne(oh => oh.Buyer).WithMany().OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<OrderHeader>().HasOne(oh => oh.Seller).WithMany().OnDelete(DeleteBehavior.Restrict);
+
         base.OnModelCreating(builder);
     }
 }

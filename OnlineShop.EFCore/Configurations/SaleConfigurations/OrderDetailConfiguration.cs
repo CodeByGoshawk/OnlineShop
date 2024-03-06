@@ -12,8 +12,8 @@ internal class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetails>
         builder.ToTable(nameof(OrderDetails), DatabaseConstants.Schemas.Sale);
         builder.HasKey(p => new
         {
-            p.OrderHeader,
-            p.Product
+            p.OrderHeaderId,
+            p.ProductId
         });
         builder.Property(p => p.Quantity).HasColumnType("money").IsRequired();
         builder.Property(p => p.UnitPrice).HasColumnType("money").IsRequired();

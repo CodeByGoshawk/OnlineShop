@@ -14,6 +14,6 @@ internal class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Code).IsRequired();
         builder.Property(p => p.Title).IsRequired();
         builder.Property(p => p.UnitPrice).IsRequired();
-        builder.Property(p => p.ProductCategory).IsRequired();
+        builder.Property(p => p.ProductCategoryId).IsRequired();
     }
 }

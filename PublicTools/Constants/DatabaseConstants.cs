@@ -23,6 +23,12 @@ public static class DatabaseConstants
 
     public static class GodAdminUsers
     {
-        
+        public const string ShahbaziUserId = "1";
+        public const string ShahbaziFirstName = "Amir";
+        public const string ShahbaziLastName = "Shahbazi";
+        public const string ShahbaziNationalId = "0440000000";
+        public const string ShahbaziUserName = "a.Shahbazi";
+        public const string ShahbaziPassword = "Amir12345";
+        public const string ShahbaziCellPhone = "09120000000";
     }
 }
