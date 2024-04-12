@@ -12,9 +12,9 @@ public abstract class MainEntityBase : IMainEntity
 
     public bool IsModified { get; set; }
     public DateTime ModifyDateGregorian { get; set; }
-    public string ModifyDatePersian { get ; set; }
+    public string? ModifyDatePersian { get; set; }
 
     public bool IsSoftDeleted { get; set; }
     public DateTime SoftDeleteDateGregorian { get ; set; }
-    public string SoftDeleteDatePersian { get ; set; }
+    public string? SoftDeleteDatePersian { get ; set; }
 }

@@ -4,5 +4,5 @@ public interface IModifiedEntity
 {
     bool IsModified { get; set; }
     DateTime ModifyDateGregorian {  get; set; }
-    string ModifyDatePersian { get; set; }
+    string? ModifyDatePersian { get; set; }
 }

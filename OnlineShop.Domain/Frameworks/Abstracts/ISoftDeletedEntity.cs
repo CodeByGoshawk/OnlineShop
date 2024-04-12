@@ -4,5 +4,5 @@ public interface ISoftDeletedEntity
 {
     bool IsSoftDeleted { get; set; }
     DateTime SoftDeleteDateGregorian { get; set; }
-    string SoftDeleteDatePersian { get; set; }
+    string? SoftDeleteDatePersian { get; set; }
 }

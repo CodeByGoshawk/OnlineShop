@@ -15,5 +15,6 @@ internal class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Title).IsRequired();
         builder.Property(p => p.UnitPrice).IsRequired();
         builder.Property(p => p.ProductCategoryId).IsRequired();
+        builder.HasQueryFilter(p => !p.IsSoftDeleted);
     }
 }

@@ -7,14 +7,15 @@ using PublicTools.Tools;
 using ResponseFramewrok;
 
 namespace OnlineShop.Application.Services.SaleServices;
-public class ProductService(IProductRepository repository) : IProductService
+public class ProductService(IProductRepository productRepository,IProductCategoryRepository productCategoryRepository) : IProductService
 {
-    private readonly IProductRepository _repository = repository;
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IProductCategoryRepository _productCategoryRepository = productCategoryRepository;
 
     // Get
-    public async Task<IResponse<GetProductResultAppDto>> Get(Guid id)
+    public async Task<IResponse<GetProductResultAppDto>> Get(GetProductAppDto model)
     {
-        var selectOperationResponse = await _repository.SelectByIdAsync(id);
+        var selectOperationResponse = await _productRepository.SelectByIdAsync(model.Id);
         if (!selectOperationResponse.IsSuccessful) return new Response<GetProductResultAppDto>(selectOperationResponse.ErrorMessage!);
         var resultDto = new GetProductResultAppDto
         {
@@ -34,7 +35,7 @@ public class ProductService(IProductRepository repository) : IProductService
 
     public async Task<IResponse<GetAllProductsResultAppDto>> GetAll()
     {
-        var selectOperationResponse = await _repository.SelectAsync();
+        var selectOperationResponse = await _productRepository.SelectAsync();
         if (!selectOperationResponse.IsSuccessful) return new Response<GetAllProductsResultAppDto>(selectOperationResponse.ErrorMessage!);
 
         var resultDto = new GetAllProductsResultAppDto();
@@ -61,11 +62,13 @@ public class ProductService(IProductRepository repository) : IProductService
     }
 
     // Post
-    public async Task<IResponse<PostProductResultAppDto>> Post(PostProductAppDto model)
+    public async Task<IResponse<object>> Post(PostProductAppDto model)
     {
-        if (model is null) return new Response<PostProductResultAppDto>(MessageResource.Error_NullInputModel);
-        if (model.Code is null) return new Response<PostProductResultAppDto>(MessageResource.Error_RequiredField);
-        if (model.Title is null) return new Response<PostProductResultAppDto>(MessageResource.Error_RequiredField);
+        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
+        if (model.Code is null) return new Response<object>(MessageResource.Error_RequiredField);
+        if (model.Title is null) return new Response<object>(MessageResource.Error_RequiredField);
+        if (!_productCategoryRepository.SelectByIdAsync(model.ProductCategoryId).Result.IsSuccessful) return new Response<object>(MessageResource.Error_CategoryNotFound);
+        if (_productRepository.SelectByCodeAsync(model.Code).Result.IsSuccessful) return new Response<object>(MessageResource.Error_RepetitiousCode);
 
         var newProduct = new Product
         {
@@ -80,20 +83,26 @@ public class ProductService(IProductRepository repository) : IProductService
             ProductCategoryId = model.ProductCategoryId
         };
 
-        var insertOperationResponse = await _repository.InsertAsync(newProduct);
+        var insertOperationResponse = await _productRepository.InsertAsync(newProduct);
 
-        return insertOperationResponse.IsSuccessful ? new Response<PostProductResultAppDto>(new PostProductResultAppDto()) : new Response<PostProductResultAppDto>(insertOperationResponse.ErrorMessage!);
+        if (insertOperationResponse.IsSuccessful) await _productRepository.SaveAsync();
+
+        return insertOperationResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(insertOperationResponse.ErrorMessage!);
     }
 
     // Put
-    public async Task<IResponse<PutProductResultAppDto>> Put(PutProductAppDto model)
+    public async Task<IResponse<object>> Put(PutProductAppDto model)
     {
-        if (model is null) return new Response<PutProductResultAppDto>(MessageResource.Error_NullInputModel);
-        if (model.Code is null) return new Response<PutProductResultAppDto>(MessageResource.Error_RequiredField);
-        if (model.Title is null) return new Response<PutProductResultAppDto>(MessageResource.Error_RequiredField);
+        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
+        if (model.Code is null) return new Response<object>(MessageResource.Error_RequiredField);
+        if (model.Title is null) return new Response<object>(MessageResource.Error_RequiredField);
+        if (!_productCategoryRepository.SelectByIdAsync(model.ProductCategoryId).Result.IsSuccessful) return new Response<object>(MessageResource.Error_CategoryNotFound);
 
-        var selectOperationResponse = await _repository.SelectByIdAsync(model.Id);
-        if (!selectOperationResponse.IsSuccessful) return new Response<PutProductResultAppDto>(selectOperationResponse.ErrorMessage!);
+        var selectOperationResponse = await _productRepository.SelectByIdAsync(model.Id);
+        if (!selectOperationResponse.IsSuccessful) return new Response<object>(selectOperationResponse.ErrorMessage!);
+        var selectByCodeOperationResponse = await _productRepository.SelectByCodeAsync(model.Code);
+        if (selectByCodeOperationResponse.IsSuccessful && selectByCodeOperationResponse.Result.Id != selectOperationResponse.Result.Id)
+            return new Response<object>(MessageResource.Error_RepetitiousCode);
 
         var updatedProduct = selectOperationResponse.Result;
         updatedProduct.Code = model.Code;
@@ -104,26 +113,30 @@ public class ProductService(IProductRepository repository) : IProductService
         updatedProduct.ModifyDateGregorian = DateTime.Now;
         updatedProduct.ModifyDatePersian = Helper.GregorianToPersianDateConverter(DateTime.Now);
 
-        var updateOperationResponse = await _repository.UpdateAsync(updatedProduct);
+        var updateOperationResponse = await _productRepository.UpdateAsync(updatedProduct);
 
-        return updateOperationResponse.IsSuccessful ? new Response<PutProductResultAppDto>(new PutProductResultAppDto()) : new Response<PutProductResultAppDto>(updateOperationResponse.ErrorMessage!);
+        if (updateOperationResponse.IsSuccessful) await _productRepository.SaveAsync();
+
+        return updateOperationResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(updateOperationResponse.ErrorMessage!);
     }
 
     // Delete
-    public async Task<IResponse<DeleteProductResultAppDto>> Delete(DeleteProductAppDto model)
+    public async Task<IResponse<object>> Delete(DeleteProductAppDto model)
     {
-        if (model is null) return new Response<DeleteProductResultAppDto>(MessageResource.Error_NullInputModel);
+        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
-        var selectOperationResponse = await _repository.SelectByIdAsync(model.Id);
-        if (!selectOperationResponse.IsSuccessful) return new Response<DeleteProductResultAppDto>(selectOperationResponse.ErrorMessage!);
+        var selectOperationResponse = await _productRepository.SelectByIdAsync(model.Id);
+        if (!selectOperationResponse.IsSuccessful) return new Response<object>(selectOperationResponse.ErrorMessage!);
 
         var deletedProduct = selectOperationResponse.Result;
         deletedProduct.IsSoftDeleted = true;
         deletedProduct.SoftDeleteDateGregorian = DateTime.Now;
         deletedProduct.SoftDeleteDatePersian = Helper.GregorianToPersianDateConverter(DateTime.Now);
 
-        var deleteOperationResponse = await _repository.DeleteAsync(deletedProduct);
+        var updateOperationResponse = await _productRepository.UpdateAsync(deletedProduct);
 
-        return deleteOperationResponse.IsSuccessful ? new Response<DeleteProductResultAppDto>(new DeleteProductResultAppDto()) : new Response<DeleteProductResultAppDto>(deleteOperationResponse.ErrorMessage!);
+        if (updateOperationResponse.IsSuccessful) await _productRepository.SaveAsync();
+
+        return updateOperationResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(updateOperationResponse.ErrorMessage!);
     }
 }

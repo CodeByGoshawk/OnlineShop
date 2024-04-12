@@ -223,15 +223,15 @@ namespace OnlineShop.EFCore.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SellerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BuyerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 2, 28, 0, 36, 40, 574, DateTimeKind.Local).AddTicks(2789)),
+                    CreatedDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 3, 29, 20, 48, 6, 473, DateTimeKind.Local).AddTicks(9925)),
                     CreatedDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsModified = table.Column<bool>(type: "bit", nullable: false),
                     ModifyDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifyDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModifyDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false),
                     SoftDeleteDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SoftDeleteDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    SoftDeleteDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -266,10 +266,10 @@ namespace OnlineShop.EFCore.Migrations
                     CreatedDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsModified = table.Column<bool>(type: "bit", nullable: false),
                     ModifyDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifyDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModifyDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false),
                     SoftDeleteDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SoftDeleteDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    SoftDeleteDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -284,7 +284,7 @@ namespace OnlineShop.EFCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderDetails",
+                name: "OrderDetail",
                 schema: "Sale",
                 columns: table => new
                 {
@@ -297,16 +297,16 @@ namespace OnlineShop.EFCore.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderDetails", x => new { x.OrderHeaderId, x.ProductId });
+                    table.PrimaryKey("PK_OrderDetail", x => new { x.OrderHeaderId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_OrderDetails_OrderHeader_OrderHeaderId1",
+                        name: "FK_OrderDetail_OrderHeader_OrderHeaderId1",
                         column: x => x.OrderHeaderId1,
                         principalSchema: "Sale",
                         principalTable: "OrderHeader",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderDetails_Product_ProductId1",
+                        name: "FK_OrderDetail_Product_ProductId1",
                         column: x => x.ProductId1,
                         principalSchema: "Sale",
                         principalTable: "Product",
@@ -328,7 +328,7 @@ namespace OnlineShop.EFCore.Migrations
                 schema: "UserManagement",
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "CellPhone", "ConcurrencyStamp", "CreatedDateGregorian", "CreatedDatePersian", "Email", "EmailConfirmed", "FirstName", "IsCellPhoneConfirmed", "IsNationalIdConfirmed", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "ModifyDateGregorian", "ModifyDatePersian", "NationalId", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "SecurityStamp", "SoftDeleteDateGregorian", "SoftDeleteDatePersian", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", 0, "09120000000", "57730a5c-8236-430a-8ec6-4d5f0edddfc3", new DateTime(2024, 2, 28, 0, 36, 40, 577, DateTimeKind.Local).AddTicks(2570), "1402/12/9 00:36:40.5772585", null, false, "Amir", true, true, "Shahbazi", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "0440000000", null, null, null, null, false, null, "7800fb50-1bb6-47e5-bf1f-ca0982879f99", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null });
+                values: new object[] { "1", 0, "09120000000", "076915fd-1138-432e-97de-804fc78d2942", new DateTime(2024, 3, 29, 20, 48, 6, 480, DateTimeKind.Local).AddTicks(3456), "1403/1/10 20:48:06.4803480", null, false, "Amir", true, true, "Shahbazi", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "0440000000", null, null, null, null, false, null, "c6a489c0-009c-4f27-a62f-60ff6cd0197a", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null });
 
             migrationBuilder.InsertData(
                 schema: "UserManagement",
@@ -397,15 +397,15 @@ namespace OnlineShop.EFCore.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetails_OrderHeaderId1",
+                name: "IX_OrderDetail_OrderHeaderId1",
                 schema: "Sale",
-                table: "OrderDetails",
+                table: "OrderDetail",
                 column: "OrderHeaderId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetails_ProductId1",
+                name: "IX_OrderDetail_ProductId1",
                 schema: "Sale",
-                table: "OrderDetails",
+                table: "OrderDetail",
                 column: "ProductId1");
 
             migrationBuilder.CreateIndex(
@@ -457,7 +457,7 @@ namespace OnlineShop.EFCore.Migrations
                 schema: "UserManagement");
 
             migrationBuilder.DropTable(
-                name: "OrderDetails",
+                name: "OrderDetail",
                 schema: "Sale");
 
             migrationBuilder.DropTable(

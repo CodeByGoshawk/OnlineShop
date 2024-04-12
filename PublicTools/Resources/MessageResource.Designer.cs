@@ -61,6 +61,15 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The selected product category does not exist.
+        /// </summary>
+        public static string Error_CategoryNotFound {
+            get {
+                return ResourceManager.GetString("Error_CategoryNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation failed.
         /// </summary>
         public static string Error_DeleteDataFailed {
@@ -88,11 +97,47 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input Code is null.
+        /// </summary>
+        public static string Error_NullInputCode {
+            get {
+                return ResourceManager.GetString("Error_NullInputCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Id is null.
+        /// </summary>
+        public static string Error_NullInputId {
+            get {
+                return ResourceManager.GetString("Error_NullInputId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input model is null.
         /// </summary>
         public static string Error_NullInputModel {
             get {
                 return ResourceManager.GetString("Error_NullInputModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected parent does not exist.
+        /// </summary>
+        public static string Error_ParentCategoryNotFound {
+            get {
+                return ResourceManager.GetString("Error_ParentCategoryNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The entered code already exists.
+        /// </summary>
+        public static string Error_RepetitiousCode {
+            get {
+                return ResourceManager.GetString("Error_RepetitiousCode", resourceCulture);
             }
         }
         

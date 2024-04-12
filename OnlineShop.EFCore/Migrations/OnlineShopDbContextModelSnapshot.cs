@@ -114,7 +114,7 @@ namespace OnlineShop.EFCore.Migrations
                     b.ToTable("AspNetUserTokens", "UserManagement");
                 });
 
-            modelBuilder.Entity("OnlineShop.Domain.Aggregates.SaleAggregates.OrderDetails", b =>
+            modelBuilder.Entity("OnlineShop.Domain.Aggregates.SaleAggregates.OrderDetail", b =>
                 {
                     b.Property<string>("OrderHeaderId")
                         .HasColumnType("nvarchar(450)");
@@ -140,7 +140,7 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.HasIndex("ProductId1");
 
-                    b.ToTable("OrderDetails", "Sale");
+                    b.ToTable("OrderDetail", "Sale");
                 });
 
             modelBuilder.Entity("OnlineShop.Domain.Aggregates.SaleAggregates.OrderHeader", b =>
@@ -160,7 +160,7 @@ namespace OnlineShop.EFCore.Migrations
                     b.Property<DateTime>("CreatedDateGregorian")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 2, 28, 0, 36, 40, 574, DateTimeKind.Local).AddTicks(2789));
+                        .HasDefaultValue(new DateTime(2024, 3, 29, 20, 48, 6, 473, DateTimeKind.Local).AddTicks(9925));
 
                     b.Property<string>("CreatedDatePersian")
                         .IsRequired()
@@ -176,7 +176,6 @@ namespace OnlineShop.EFCore.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifyDatePersian")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SellerId")
@@ -187,7 +186,6 @@ namespace OnlineShop.EFCore.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SoftDeleteDatePersian")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -226,7 +224,6 @@ namespace OnlineShop.EFCore.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifyDatePersian")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductCategoryId")
@@ -236,7 +233,6 @@ namespace OnlineShop.EFCore.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SoftDeleteDatePersian")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -460,9 +456,9 @@ namespace OnlineShop.EFCore.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CellPhone = "09120000000",
-                            ConcurrencyStamp = "57730a5c-8236-430a-8ec6-4d5f0edddfc3",
-                            CreatedDateGregorian = new DateTime(2024, 2, 28, 0, 36, 40, 577, DateTimeKind.Local).AddTicks(2570),
-                            CreatedDatePersian = "1402/12/9 00:36:40.5772585",
+                            ConcurrencyStamp = "076915fd-1138-432e-97de-804fc78d2942",
+                            CreatedDateGregorian = new DateTime(2024, 3, 29, 20, 48, 6, 480, DateTimeKind.Local).AddTicks(3456),
+                            CreatedDatePersian = "1403/1/10 20:48:06.4803480",
                             EmailConfirmed = false,
                             FirstName = "Amir",
                             IsActive = false,
@@ -475,7 +471,7 @@ namespace OnlineShop.EFCore.Migrations
                             ModifyDateGregorian = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             NationalId = "0440000000",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7800fb50-1bb6-47e5-bf1f-ca0982879f99",
+                            SecurityStamp = "c6a489c0-009c-4f27-a62f-60ff6cd0197a",
                             SoftDeleteDateGregorian = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TwoFactorEnabled = false
                         });
@@ -539,10 +535,10 @@ namespace OnlineShop.EFCore.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OnlineShop.Domain.Aggregates.SaleAggregates.OrderDetails", b =>
+            modelBuilder.Entity("OnlineShop.Domain.Aggregates.SaleAggregates.OrderDetail", b =>
                 {
                     b.HasOne("OnlineShop.Domain.Aggregates.SaleAggregates.OrderHeader", "OrderHeader")
-                        .WithMany()
+                        .WithMany("OrderDetails")
                         .HasForeignKey("OrderHeaderId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -580,7 +576,7 @@ namespace OnlineShop.EFCore.Migrations
             modelBuilder.Entity("OnlineShop.Domain.Aggregates.SaleAggregates.Product", b =>
                 {
                     b.HasOne("OnlineShop.Domain.Aggregates.SaleAggregates.ProductCategory", "ProductCategory")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -610,6 +606,16 @@ namespace OnlineShop.EFCore.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("OnlineShop.Domain.Aggregates.SaleAggregates.OrderHeader", b =>
+                {
+                    b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("OnlineShop.Domain.Aggregates.SaleAggregates.ProductCategory", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

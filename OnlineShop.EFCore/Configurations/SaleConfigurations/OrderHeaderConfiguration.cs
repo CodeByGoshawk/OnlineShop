@@ -16,5 +16,9 @@ internal class OrderHeaderConfiguration : IEntityTypeConfiguration<OrderHeader>
         builder.Property(p => p.BuyerId).IsRequired();
         builder.Property(p => p.CreatedDateGregorian).IsRequired().HasDefaultValue(DateTime.Now);
         builder.Property(p => p.CreatedDatePersian).IsRequired();
+
+        builder.HasOne(oh => oh.Buyer).WithMany().OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(oh => oh.Seller).WithMany().OnDelete(DeleteBehavior.Restrict);
+        builder.HasQueryFilter(p => !p.IsSoftDeleted);
     }
 }

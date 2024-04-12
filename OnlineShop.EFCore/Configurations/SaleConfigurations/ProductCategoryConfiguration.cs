@@ -11,6 +11,7 @@ internal class ProductCategoryConfiguration : IEntityTypeConfiguration<ProductCa
     {
         builder.ToTable(nameof(ProductCategory), DatabaseConstants.Schemas.Sale);
         builder.HasKey(p => p.Id);
+        builder.Property(p => p.Id).UseIdentityColumn();
         builder.Property(p => p.Title).IsRequired();
     }
 }

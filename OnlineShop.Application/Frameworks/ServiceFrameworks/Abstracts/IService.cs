@@ -1,18 +1,18 @@
 ﻿using ResponseFramewrok;
 
 namespace OnlineShop.Application.Frameworks.ServiceFrameworks.Abstracts;
-public interface IService<TGetResultDto, TGetAllResultDto, TPostDto, TPostResultDto, TPutDto, TPutResultDto, TDeleteDto, TDeleteResultDto, in TPrimaryKey>
+public interface IService<TGetDto,TGetResultDto, TGetAllResultDto, TPostDto, TPutDto, TDeleteDto, in TPrimaryKey>
 {
     //Get
     Task<IResponse<TGetAllResultDto>> GetAll();
-    Task<IResponse<TGetResultDto>> Get(TPrimaryKey id);
+    Task<IResponse<TGetResultDto>> Get(TGetDto model);
 
     // Post
-    Task<IResponse<TPostResultDto>> Post(TPostDto model);
+    Task<IResponse<object>> Post(TPostDto model);
 
     // Put
-    Task<IResponse<TPutResultDto>> Put(TPutDto model);
+    Task<IResponse<object>> Put(TPutDto model);
 
     // Delete
-    Task<IResponse<TDeleteResultDto>> Delete(TDeleteDto model);
+    Task<IResponse<object>> Delete(TDeleteDto model);
 }

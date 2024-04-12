@@ -26,6 +26,7 @@ public class BaseRepository<TDbContext, TEntity, TPrimaryKey>(TDbContext dbConte
     // Read
     public virtual async Task<IResponse<TEntity>> SelectByIdAsync(TPrimaryKey id)
     {
+        if (id is null) return new Response<TEntity>(MessageResource.Error_NullInputId);
         var entity = await _dbSet.FindAsync(id);
         return entity is not null ? new Response<TEntity>(entity) : new Response<TEntity>(MessageResource.Error_FindEntityFailed);
     }
@@ -46,6 +47,7 @@ public class BaseRepository<TDbContext, TEntity, TPrimaryKey>(TDbContext dbConte
     // Delete
     public virtual async Task<IResponse<object>> DeleteAsync(TPrimaryKey id)
     {
+        if (id is null) return new Response<object>(MessageResource.Error_NullInputId);
         var entityToDelete = await _dbSet.FindAsync(id);
         if (entityToDelete is null) return new Response<object>(MessageResource.Error_FindEntityFailed);
         _dbSet.Remove(entityToDelete);

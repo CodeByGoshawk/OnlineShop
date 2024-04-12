@@ -2,7 +2,7 @@
 
 namespace OnlineShop.Domain.Aggregates.SaleAggregates;
 
-public class OrderDetails : IDbSetEntity
+public class OrderDetail : IDbSetEntity
 {
     //Keys
     public string OrderHeaderId { get; set; }

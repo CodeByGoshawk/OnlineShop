@@ -13,4 +13,5 @@ public class ProductCategory : IEntity<int>, IDbSetEntity, ITitledEntity
 
     // Navigations
     public ProductCategory? Parent { get; set; }
+    public List<Product>? Products { get; set; }
 }

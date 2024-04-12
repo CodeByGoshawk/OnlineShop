@@ -18,4 +18,5 @@ public class OrderHeader : MainEntityBase , ICreatedEntity
     // Navigations
     public OnlineShopUser Seller { get; set; }
     public OnlineShopUser Buyer { get; set; }
+    public List<OrderDetail> OrderDetails { get; set; }
 }

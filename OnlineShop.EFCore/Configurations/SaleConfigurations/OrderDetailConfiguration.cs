@@ -5,11 +5,11 @@ using PublicTools.Constants;
 
 namespace OnlineShop.EFCore.Configurations.SaleConfigurations;
 
-internal class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetails>
+internal class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
 {
-    public void Configure(EntityTypeBuilder<OrderDetails> builder)
+    public void Configure(EntityTypeBuilder<OrderDetail> builder)
     {
-        builder.ToTable(nameof(OrderDetails), DatabaseConstants.Schemas.Sale);
+        builder.ToTable(nameof(OrderDetail), DatabaseConstants.Schemas.Sale);
         builder.HasKey(p => new
         {
             p.OrderHeaderId,

@@ -2,6 +2,6 @@
 using OnlineShop.Application.Frameworks.ServiceFrameworks.Abstracts;
 
 namespace OnlineShop.Application.Contracts;
-public interface IProductService : IService<GetProductResultAppDto, GetAllProductsResultAppDto, PostProductAppDto, PostProductResultAppDto, PutProductAppDto, PutProductResultAppDto, DeleteProductAppDto, DeleteProductResultAppDto, Guid>
+public interface IProductService : IService<GetProductAppDto, GetProductResultAppDto, GetAllProductsResultAppDto, PostProductAppDto, PutProductAppDto, DeleteProductAppDto, Guid>
 {
 }

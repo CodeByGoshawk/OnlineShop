@@ -24,9 +24,6 @@ public class OnlineShopDbContext(DbContextOptions options) : IdentityDbContext<O
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         builder.RegisterAllEntities<IDbSetEntity>(typeof(IDbSetEntity).Assembly);
 
-        builder.Entity<OrderHeader>().HasOne(oh => oh.Buyer).WithMany().OnDelete(DeleteBehavior.Restrict);
-        builder.Entity<OrderHeader>().HasOne(oh => oh.Seller).WithMany().OnDelete(DeleteBehavior.Restrict);
-
         base.OnModelCreating(builder);
     }
 }
