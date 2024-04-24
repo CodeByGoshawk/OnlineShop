@@ -15,6 +15,7 @@ internal class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
             p.OrderHeaderId,
             p.ProductId
         });
+
         builder.Property(p => p.Quantity).HasColumnType("money").IsRequired();
         builder.Property(p => p.UnitPrice).HasColumnType("money").IsRequired();
     }

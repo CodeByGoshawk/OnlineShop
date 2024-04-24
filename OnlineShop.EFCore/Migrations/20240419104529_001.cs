@@ -49,13 +49,13 @@ namespace OnlineShop.EFCore.Migrations
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     CellPhone = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsCellPhoneConfirmed = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    CreatedDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 4, 19, 14, 15, 27, 235, DateTimeKind.Local).AddTicks(809)),
+                    CreatedDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "1403/1/31 14:15:27.2351882"),
                     IsModified = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    ModifyDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifyDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifyDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    SoftDeleteDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SoftDeleteDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: true),
                     SoftDeleteDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -223,14 +223,14 @@ namespace OnlineShop.EFCore.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SellerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BuyerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 3, 29, 20, 48, 6, 473, DateTimeKind.Local).AddTicks(9925)),
-                    CreatedDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsModified = table.Column<bool>(type: "bit", nullable: false),
-                    ModifyDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 4, 19, 14, 15, 27, 230, DateTimeKind.Local).AddTicks(7588)),
+                    CreatedDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "1403/1/31 14:15:27.2308945"),
+                    IsModified = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    ModifyDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifyDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    SoftDeleteDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    SoftDeleteDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: true),
                     SoftDeleteDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -262,13 +262,13 @@ namespace OnlineShop.EFCore.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsModified = table.Column<bool>(type: "bit", nullable: false),
-                    ModifyDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 4, 19, 14, 15, 27, 233, DateTimeKind.Local).AddTicks(835)),
+                    CreatedDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "1403/1/31 14:15:27.2332273"),
+                    IsModified = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    ModifyDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifyDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    SoftDeleteDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    SoftDeleteDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: true),
                     SoftDeleteDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -288,26 +288,24 @@ namespace OnlineShop.EFCore.Migrations
                 schema: "Sale",
                 columns: table => new
                 {
-                    OrderHeaderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrderHeaderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "money", nullable: false),
-                    Quantity = table.Column<decimal>(type: "money", nullable: false),
-                    OrderHeaderId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Quantity = table.Column<decimal>(type: "money", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderDetail", x => new { x.OrderHeaderId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_OrderDetail_OrderHeader_OrderHeaderId1",
-                        column: x => x.OrderHeaderId1,
+                        name: "FK_OrderDetail_OrderHeader_OrderHeaderId",
+                        column: x => x.OrderHeaderId,
                         principalSchema: "Sale",
                         principalTable: "OrderHeader",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderDetail_Product_ProductId1",
-                        column: x => x.ProductId1,
+                        name: "FK_OrderDetail_Product_ProductId",
+                        column: x => x.ProductId,
                         principalSchema: "Sale",
                         principalTable: "Product",
                         principalColumn: "Id",
@@ -328,7 +326,7 @@ namespace OnlineShop.EFCore.Migrations
                 schema: "UserManagement",
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "CellPhone", "ConcurrencyStamp", "CreatedDateGregorian", "CreatedDatePersian", "Email", "EmailConfirmed", "FirstName", "IsCellPhoneConfirmed", "IsNationalIdConfirmed", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "ModifyDateGregorian", "ModifyDatePersian", "NationalId", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "SecurityStamp", "SoftDeleteDateGregorian", "SoftDeleteDatePersian", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", 0, "09120000000", "076915fd-1138-432e-97de-804fc78d2942", new DateTime(2024, 3, 29, 20, 48, 6, 480, DateTimeKind.Local).AddTicks(3456), "1403/1/10 20:48:06.4803480", null, false, "Amir", true, true, "Shahbazi", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "0440000000", null, null, null, null, false, null, "c6a489c0-009c-4f27-a62f-60ff6cd0197a", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null });
+                values: new object[] { "1", 0, "09120000000", "76ace3a5-d4dc-4cf1-9719-b9f11d3bbb9b", new DateTime(2024, 4, 19, 14, 15, 27, 235, DateTimeKind.Local).AddTicks(6320), "1403/1/31 14:15:27.2356324", null, false, "Amir", true, true, "Shahbazi", null, false, null, null, null, "0440000000", null, null, null, null, false, null, "8efae989-007b-4655-ba4b-675d0f9d9836", null, null, false, null });
 
             migrationBuilder.InsertData(
                 schema: "UserManagement",
@@ -397,16 +395,10 @@ namespace OnlineShop.EFCore.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetail_OrderHeaderId1",
+                name: "IX_OrderDetail_ProductId",
                 schema: "Sale",
                 table: "OrderDetail",
-                column: "OrderHeaderId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderDetail_ProductId1",
-                schema: "Sale",
-                table: "OrderDetail",
-                column: "ProductId1");
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderHeader_BuyerId",

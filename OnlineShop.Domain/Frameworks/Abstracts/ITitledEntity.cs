@@ -2,5 +2,5 @@
 
 internal interface ITitledEntity
 {
-    string Title { get; set; }
+    string? Title { get; set; }
 }

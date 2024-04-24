@@ -3,5 +3,5 @@
 internal interface ICreatedEntity
 {
     DateTime CreatedDateGregorian { get; set; }
-    string CreatedDatePersian { get; set; }
+    string? CreatedDatePersian { get; set; }
 }

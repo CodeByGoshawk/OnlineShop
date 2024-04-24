@@ -2,9 +2,9 @@
 
 namespace PublicTools.Tools;
 
-public class Helper
+public static class Helper
 {
-    public static string GregorianToPersianDateConverter(DateTime date)
+    public static string ConvertToPersian(this DateTime date)
     {
         var persianCalendar = new PersianCalendar();
         var year = persianCalendar.GetYear(date);

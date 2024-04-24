@@ -9,9 +9,9 @@ public class Product : MainEntityBase , ITitledEntity
     public int ProductCategoryId { get; set; }
 
     // Properties
-    public string Title { get; set; }
+    public string? Title { get; set; }
     public decimal UnitPrice { get; set; }
 
     // Navigations
-    public ProductCategory ProductCategory { get; set; }
+    public ProductCategory? ProductCategory { get; set; }
 }

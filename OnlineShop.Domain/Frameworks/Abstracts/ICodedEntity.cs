@@ -2,5 +2,5 @@
 
 internal interface ICodedEntity<TCode>
 {
-    TCode Code { get; set; }
+    TCode? Code { get; set; }
 }

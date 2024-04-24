@@ -4,9 +4,9 @@ namespace ResponseFramewrok;
 
 public class Response<TResult> : IResponse<TResult>
 {
-    public Response(TResult result, bool isSuccessful, string? message, string? errorMessage, HttpStatusCode httStatusCode)
+    public Response(TResult resultModel, bool isSuccessful, string? message, string? errorMessage, HttpStatusCode httStatusCode)
     {
-        Result = result;
+        ResultModel = resultModel;
         IsSuccessful = isSuccessful;
         Message = message;
         ErrorMessage = errorMessage;
@@ -14,7 +14,7 @@ public class Response<TResult> : IResponse<TResult>
     }
     public Response(TResult result)
     {
-        Result = result;
+        ResultModel = result;
         if (result is not null)
         {
             IsSuccessful = true;
@@ -36,13 +36,13 @@ public class Response<TResult> : IResponse<TResult>
         IsSuccessful = false;
         Message = string.Empty;
         ErrorMessage = errorMessage;
-        Result = default;
+        ResultModel = default;
         HttpStatusCode = HttpStatusCode.Ambiguous;
     }
 
     public bool IsSuccessful { get ; set; }
     public string? Message { get; set; }
     public string? ErrorMessage { get; set; }
-    public TResult? Result { get; set; }
+    public TResult? ResultModel { get; set; }
     public HttpStatusCode HttpStatusCode { get; set; }
 }

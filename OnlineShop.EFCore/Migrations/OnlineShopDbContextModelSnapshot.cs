@@ -116,16 +116,10 @@ namespace OnlineShop.EFCore.Migrations
 
             modelBuilder.Entity("OnlineShop.Domain.Aggregates.SaleAggregates.OrderDetail", b =>
                 {
-                    b.Property<string>("OrderHeaderId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("OrderHeaderId1")
+                    b.Property<Guid>("OrderHeaderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ProductId1")
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Quantity")
@@ -136,9 +130,7 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.HasKey("OrderHeaderId", "ProductId");
 
-                    b.HasIndex("OrderHeaderId1");
-
-                    b.HasIndex("ProductId1");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("OrderDetail", "Sale");
                 });
@@ -160,19 +152,25 @@ namespace OnlineShop.EFCore.Migrations
                     b.Property<DateTime>("CreatedDateGregorian")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 3, 29, 20, 48, 6, 473, DateTimeKind.Local).AddTicks(9925));
+                        .HasDefaultValue(new DateTime(2024, 4, 19, 14, 15, 27, 230, DateTimeKind.Local).AddTicks(7588));
 
                     b.Property<string>("CreatedDatePersian")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("1403/1/31 14:15:27.2308945");
 
                     b.Property<bool>("IsModified")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsSoftDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
-                    b.Property<DateTime>("ModifyDateGregorian")
+                    b.Property<DateTime?>("ModifyDateGregorian")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifyDatePersian")
@@ -182,7 +180,7 @@ namespace OnlineShop.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("SoftDeleteDateGregorian")
+                    b.Property<DateTime?>("SoftDeleteDateGregorian")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SoftDeleteDatePersian")
@@ -208,19 +206,27 @@ namespace OnlineShop.EFCore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDateGregorian")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2024, 4, 19, 14, 15, 27, 233, DateTimeKind.Local).AddTicks(835));
 
                     b.Property<string>("CreatedDatePersian")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("1403/1/31 14:15:27.2332273");
 
                     b.Property<bool>("IsModified")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsSoftDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
-                    b.Property<DateTime>("ModifyDateGregorian")
+                    b.Property<DateTime?>("ModifyDateGregorian")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifyDatePersian")
@@ -229,7 +235,7 @@ namespace OnlineShop.EFCore.Migrations
                     b.Property<int>("ProductCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("SoftDeleteDateGregorian")
+                    b.Property<DateTime?>("SoftDeleteDateGregorian")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SoftDeleteDatePersian")
@@ -331,11 +337,15 @@ namespace OnlineShop.EFCore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDateGregorian")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2024, 4, 19, 14, 15, 27, 235, DateTimeKind.Local).AddTicks(809));
 
                     b.Property<string>("CreatedDatePersian")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("1403/1/31 14:15:27.2351882");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -386,7 +396,7 @@ namespace OnlineShop.EFCore.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTime>("ModifyDateGregorian")
+                    b.Property<DateTime?>("ModifyDateGregorian")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifyDatePersian")
@@ -419,7 +429,7 @@ namespace OnlineShop.EFCore.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("SoftDeleteDateGregorian")
+                    b.Property<DateTime?>("SoftDeleteDateGregorian")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SoftDeleteDatePersian")
@@ -456,9 +466,9 @@ namespace OnlineShop.EFCore.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CellPhone = "09120000000",
-                            ConcurrencyStamp = "076915fd-1138-432e-97de-804fc78d2942",
-                            CreatedDateGregorian = new DateTime(2024, 3, 29, 20, 48, 6, 480, DateTimeKind.Local).AddTicks(3456),
-                            CreatedDatePersian = "1403/1/10 20:48:06.4803480",
+                            ConcurrencyStamp = "76ace3a5-d4dc-4cf1-9719-b9f11d3bbb9b",
+                            CreatedDateGregorian = new DateTime(2024, 4, 19, 14, 15, 27, 235, DateTimeKind.Local).AddTicks(6320),
+                            CreatedDatePersian = "1403/1/31 14:15:27.2356324",
                             EmailConfirmed = false,
                             FirstName = "Amir",
                             IsActive = false,
@@ -468,11 +478,9 @@ namespace OnlineShop.EFCore.Migrations
                             IsSoftDeleted = false,
                             LastName = "Shahbazi",
                             LockoutEnabled = false,
-                            ModifyDateGregorian = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             NationalId = "0440000000",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c6a489c0-009c-4f27-a62f-60ff6cd0197a",
-                            SoftDeleteDateGregorian = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "8efae989-007b-4655-ba4b-675d0f9d9836",
                             TwoFactorEnabled = false
                         });
                 });
@@ -539,13 +547,13 @@ namespace OnlineShop.EFCore.Migrations
                 {
                     b.HasOne("OnlineShop.Domain.Aggregates.SaleAggregates.OrderHeader", "OrderHeader")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("OrderHeaderId1")
+                        .HasForeignKey("OrderHeaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("OnlineShop.Domain.Aggregates.SaleAggregates.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId1")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

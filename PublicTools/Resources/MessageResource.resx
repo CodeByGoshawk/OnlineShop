@@ -117,11 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Error_BuyerNotFound" xml:space="preserve">
+    <value>BuyerNotFound</value>
+  </data>
   <data name="Error_CategoryNotFound" xml:space="preserve">
     <value>The selected product category does not exist</value>
   </data>
   <data name="Error_DeleteDataFailed" xml:space="preserve">
     <value>Operation failed</value>
+  </data>
+  <data name="Error_DuplicateProductInAnOrder" xml:space="preserve">
+    <value>Some of products are duplicate in an order</value>
+  </data>
+  <data name="Error_EmptyOrderDetails" xml:space="preserve">
+    <value>OrderDetails can not be empty</value>
   </data>
   <data name="Error_FindEntityFailed" xml:space="preserve">
     <value>Entity not found</value>
@@ -138,8 +147,26 @@
   <data name="Error_NullInputModel" xml:space="preserve">
     <value>Input model is null</value>
   </data>
+  <data name="Error_NullOrderDetail" xml:space="preserve">
+    <value>OrderDetail can not be null</value>
+  </data>
+  <data name="Error_OrderNotFound" xml:space="preserve">
+    <value>Order not found</value>
+  </data>
   <data name="Error_ParentCategoryNotFound" xml:space="preserve">
     <value>The selected parent does not exist</value>
+  </data>
+  <data name="Error_ProductCategoryHasChild" xml:space="preserve">
+    <value>The ProductCategory has child</value>
+  </data>
+  <data name="Error_ProductCategoryHasProduct" xml:space="preserve">
+    <value>The product category has products</value>
+  </data>
+  <data name="Error_ProductCategorySameIdandParentId" xml:space="preserve">
+    <value>Id and ParentId can not be same</value>
+  </data>
+  <data name="Error_ProductNotFound" xml:space="preserve">
+    <value>Product not found</value>
   </data>
   <data name="Error_RepetitiousCode" xml:space="preserve">
     <value>The entered code already exists</value>
@@ -150,7 +177,22 @@
   <data name="Error_SelectAllFailed" xml:space="preserve">
     <value>There is a problem in fetching data from database</value>
   </data>
+  <data name="Error_SellerNotFound" xml:space="preserve">
+    <value>Seller not found</value>
+  </data>
   <data name="Error_UpdateDataFailed" xml:space="preserve">
     <value>Operation failed</value>
+  </data>
+  <data name="Error_WrongBuyer" xml:space="preserve">
+    <value>Wrong buyer</value>
+  </data>
+  <data name="Error_WrongSeller" xml:space="preserve">
+    <value>Wrong seller</value>
+  </data>
+  <data name="Error_ZeroOrLessQuantity" xml:space="preserve">
+    <value>Quantity can not be 0 or less</value>
+  </data>
+  <data name="Error_ZeroOrLessUnitPrice" xml:space="preserve">
+    <value>UnitPrice can not be 0 or less</value>
   </data>
 </root>

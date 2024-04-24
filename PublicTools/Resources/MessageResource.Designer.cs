@@ -61,6 +61,15 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BuyerNotFound.
+        /// </summary>
+        public static string Error_BuyerNotFound {
+            get {
+                return ResourceManager.GetString("Error_BuyerNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected product category does not exist.
         /// </summary>
         public static string Error_CategoryNotFound {
@@ -75,6 +84,24 @@ namespace PublicTools.Resources {
         public static string Error_DeleteDataFailed {
             get {
                 return ResourceManager.GetString("Error_DeleteDataFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some of products are duplicate in an order.
+        /// </summary>
+        public static string Error_DuplicateProductInAnOrder {
+            get {
+                return ResourceManager.GetString("Error_DuplicateProductInAnOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OrderDetails can not be empty.
+        /// </summary>
+        public static string Error_EmptyOrderDetails {
+            get {
+                return ResourceManager.GetString("Error_EmptyOrderDetails", resourceCulture);
             }
         }
         
@@ -124,11 +151,65 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OrderDetail can not be null.
+        /// </summary>
+        public static string Error_NullOrderDetail {
+            get {
+                return ResourceManager.GetString("Error_NullOrderDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order not found.
+        /// </summary>
+        public static string Error_OrderNotFound {
+            get {
+                return ResourceManager.GetString("Error_OrderNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected parent does not exist.
         /// </summary>
         public static string Error_ParentCategoryNotFound {
             get {
                 return ResourceManager.GetString("Error_ParentCategoryNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The ProductCategory has child.
+        /// </summary>
+        public static string Error_ProductCategoryHasChild {
+            get {
+                return ResourceManager.GetString("Error_ProductCategoryHasChild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The product category has products.
+        /// </summary>
+        public static string Error_ProductCategoryHasProduct {
+            get {
+                return ResourceManager.GetString("Error_ProductCategoryHasProduct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id and ParentId can not be same.
+        /// </summary>
+        public static string Error_ProductCategorySameIdandParentId {
+            get {
+                return ResourceManager.GetString("Error_ProductCategorySameIdandParentId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product not found.
+        /// </summary>
+        public static string Error_ProductNotFound {
+            get {
+                return ResourceManager.GetString("Error_ProductNotFound", resourceCulture);
             }
         }
         
@@ -160,11 +241,56 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Seller not found.
+        /// </summary>
+        public static string Error_SellerNotFound {
+            get {
+                return ResourceManager.GetString("Error_SellerNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation failed.
         /// </summary>
         public static string Error_UpdateDataFailed {
             get {
                 return ResourceManager.GetString("Error_UpdateDataFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong buyer.
+        /// </summary>
+        public static string Error_WrongBuyer {
+            get {
+                return ResourceManager.GetString("Error_WrongBuyer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong seller.
+        /// </summary>
+        public static string Error_WrongSeller {
+            get {
+                return ResourceManager.GetString("Error_WrongSeller", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quantity can not be 0 or less.
+        /// </summary>
+        public static string Error_ZeroOrLessQuantity {
+            get {
+                return ResourceManager.GetString("Error_ZeroOrLessQuantity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UnitPrice can not be 0 or less.
+        /// </summary>
+        public static string Error_ZeroOrLessUnitPrice {
+            get {
+                return ResourceManager.GetString("Error_ZeroOrLessUnitPrice", resourceCulture);
             }
         }
     }

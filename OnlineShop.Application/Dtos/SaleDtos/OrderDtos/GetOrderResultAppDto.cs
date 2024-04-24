@@ -1,15 +1,15 @@
 ﻿using OnlineShop.Application.Frameworks.DtoFrameworks.Abstracts;
 using OnlineShop.Domain.Aggregates.SaleAggregates;
+using OnlineShop.Domain.Aggregates.UserManagementAggregates;
 
-namespace OnlineShop.Application.Dtos.SaleDtos.ProductDtos;
-public class GetProductResultAppDto : IIdentifiedDto<Guid>, ICodedDto<string>, ITitledDto, ICreatedDto, IModifiedDto
+namespace OnlineShop.Application.Dtos.SaleDtos.OrderHeaderDtos;
+public class GetOrderResultAppDto : IIdentifiedDto<Guid>, ICodedDto<string>, ICreatedDto, IModifiedDto
 {
     public Guid Id { get; set; }
-    public ProductCategory? ProductCategory { get; set; }
-
-    public decimal UnitPrice { get; set; }
     public string Code { get; set; }
-    public string Title { get; set; }
+    public OnlineShopUser? Seller { get; set; }
+    public OnlineShopUser? Buyer { get; set; }
+    public List<OrderDetailDto> OrderDetailDtos { get; set; } = [];
 
     public DateTime CreatedDateGregorian { get; set; }
     public string CreatedDatePersian { get; set; }

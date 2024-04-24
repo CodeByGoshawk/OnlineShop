@@ -5,8 +5,8 @@ namespace OnlineShop.Domain.Aggregates.SaleAggregates;
 public class OrderDetail : IDbSetEntity
 {
     //Keys
-    public string OrderHeaderId { get; set; }
-    public string ProductId { get; set; }
+    public Guid OrderHeaderId { get; set; }
+    public Guid ProductId { get; set; }
 
 
     // Properties
@@ -14,6 +14,6 @@ public class OrderDetail : IDbSetEntity
     public decimal Quantity { get; set; }
 
     // Navigations
-    public OrderHeader OrderHeader { get; set; }
-    public Product Product { get; set; }
+    public OrderHeader? OrderHeader { get; set; }
+    public Product? Product { get; set; }
 }

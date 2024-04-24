@@ -9,7 +9,7 @@ public class ProductCategory : IEntity<int>, IDbSetEntity, ITitledEntity
     public int? ParentId { get; set; }
 
     // Properties
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     // Navigations
     public ProductCategory? Parent { get; set; }
