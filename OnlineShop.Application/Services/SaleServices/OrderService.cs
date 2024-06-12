@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using OnlineShop.Application.Contracts;
-using OnlineShop.Application.Dtos.SaleDtos.OrderHeaderDtos;
+using OnlineShop.Application.Contracts.Sale;
+using OnlineShop.Application.Dtos.SaleDtos.OrderDtos;
 using OnlineShop.Domain.Aggregates.SaleAggregates;
 using OnlineShop.Domain.Aggregates.UserManagementAggregates;
 using OnlineShop.RepositoryDesignPattern.Contracts;

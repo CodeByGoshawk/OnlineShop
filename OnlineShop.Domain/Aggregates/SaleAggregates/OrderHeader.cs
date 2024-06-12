@@ -6,12 +6,8 @@ namespace OnlineShop.Domain.Aggregates.SaleAggregates;
 
 public class OrderHeader : MainEntityBase, ICreatedEntity
 {
-    // Keys
-    public string SellerId { get; set; }
     public string BuyerId { get; set; }
 
-    // Navigations
-    public OnlineShopUser? Seller { get; set; }
     public OnlineShopUser? Buyer { get; set; }
     public List<OrderDetail> OrderDetails { get; set; } = [];
 }

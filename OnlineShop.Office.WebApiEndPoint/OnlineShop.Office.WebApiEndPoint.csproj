@@ -12,9 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OnlineShop.Application\OnlineShop.Application.csproj" />
-    <ProjectReference Include="..\OnlineShop.EFCore\OnlineShop.EFCore.csproj" />
-    <ProjectReference Include="..\OnlineShop.RepositoryDesignPattern\OnlineShop.RepositoryDesignPattern.csproj" />
+    <ProjectReference Include="..\OnlineShop.Office.Application\OnlineShop.Office.Application.csproj" />
   </ItemGroup>
 
 </Project>

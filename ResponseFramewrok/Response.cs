@@ -40,7 +40,7 @@ public class Response<TResult> : IResponse<TResult>
         HttpStatusCode = HttpStatusCode.Ambiguous;
     }
 
-    public bool IsSuccessful { get ; set; }
+    public bool IsSuccessful { get; set; }
     public string? Message { get; set; }
     public string? ErrorMessage { get; set; }
     public TResult? ResultModel { get; set; }

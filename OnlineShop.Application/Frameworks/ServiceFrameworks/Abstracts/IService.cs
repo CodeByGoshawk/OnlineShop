@@ -1,7 +1,7 @@
 ﻿using ResponseFramewrok;
 
 namespace OnlineShop.Application.Frameworks.ServiceFrameworks.Abstracts;
-public interface IService<TGetDto,TGetResultDto, TGetAllResultDto, TPostDto, TPutDto, TDeleteDto, in TPrimaryKey>
+public interface IService<TGetDto, TGetResultDto, TGetAllResultDto, TPostDto, TPutDto, TDeleteDto, in TPrimaryKey>
 {
     //Get
     Task<IResponse<TGetAllResultDto>> GetAll();

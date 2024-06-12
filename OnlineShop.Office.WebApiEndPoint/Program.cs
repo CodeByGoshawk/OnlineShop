@@ -1,18 +1,64 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using OnlineShop.Application.Contracts;
-using OnlineShop.Application.Services.SaleServices;
+using Microsoft.IdentityModel.Tokens;
+using OnlineShop.Domain.Aggregates.UserManagementAggregates;
 using OnlineShop.EFCore;
+using OnlineShop.Office.Application.Contracts.Sale;
+using OnlineShop.Office.Application.Contracts.UserManagement;
+using OnlineShop.Office.Application.Services.SaleServices;
+using OnlineShop.Office.Application.Services.UserManagementServices;
 using OnlineShop.RepositoryDesignPattern.Contracts;
-using OnlineShop.RepositoryDesignPattern.Services.Sale;
+using OnlineShop.RepositoryDesignPattern.Services.SaleRepositories;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("OnlineShop");
 builder.Services.AddDbContext<OnlineShopDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddIdentity<OnlineShopUser, OnlineShopRole>()
+    .AddEntityFrameworkStores<OnlineShopDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]!)),
+    };
+});
+builder.Services.Configure<IdentityOptions>(c =>
+{
+    c.Password.RequireDigit = false;
+    c.Password.RequireLowercase = false;
+    c.Password.RequireNonAlphanumeric = false;
+    c.Password.RequiredLength = 3;
+});
+
+
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

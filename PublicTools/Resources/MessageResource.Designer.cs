@@ -61,7 +61,16 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BuyerNotFound.
+        ///   Looks up a localized string similar to نام کاربری یا رمز عبور اشتباه است.
+        /// </summary>
+        public static string Error_AuthenticationFailed {
+            get {
+                return ResourceManager.GetString("Error_AuthenticationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to خریدار یافت نشد.
         /// </summary>
         public static string Error_BuyerNotFound {
             get {
@@ -70,7 +79,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The selected product category does not exist.
+        ///   Looks up a localized string similar to دسته بندی انتخاب شده یافت نشد.
         /// </summary>
         public static string Error_CategoryNotFound {
             get {
@@ -79,7 +88,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operation failed.
+        ///   Looks up a localized string similar to عملیات ناموفق.
         /// </summary>
         public static string Error_DeleteDataFailed {
             get {
@@ -88,7 +97,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Some of products are duplicate in an order.
+        ///   Looks up a localized string similar to در سفارش ، یک محصول بیش از یک بار تکرار شده است.
         /// </summary>
         public static string Error_DuplicateProductInAnOrder {
             get {
@@ -97,7 +106,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OrderDetails can not be empty.
+        ///   Looks up a localized string similar to جزئیات سفارش نمی تواند خالی باشد.
         /// </summary>
         public static string Error_EmptyOrderDetails {
             get {
@@ -115,7 +124,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operation failed.
+        ///   Looks up a localized string similar to عملیات ناموفق.
         /// </summary>
         public static string Error_InsertDataFailed {
             get {
@@ -124,7 +133,25 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input Code is null.
+        ///   Looks up a localized string similar to دسترسی تغییر کاربران ادمین را ندارید.
+        /// </summary>
+        public static string Error_NoPermissionToEditAdmins {
+            get {
+                return ResourceManager.GetString("Error_NoPermissionToEditAdmins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to دسترسی دریافت اطلاعات کاربران ادمین را ندارید.
+        /// </summary>
+        public static string Error_NoPermissionToGetAdmins {
+            get {
+                return ResourceManager.GetString("Error_NoPermissionToGetAdmins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کد باید مقدار داشته باشد.
         /// </summary>
         public static string Error_NullInputCode {
             get {
@@ -133,7 +160,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input Id is null.
+        ///   Looks up a localized string similar to آی دی باید مقدار داشته باشد.
         /// </summary>
         public static string Error_NullInputId {
             get {
@@ -142,7 +169,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input model is null.
+        ///   Looks up a localized string similar to مدل وارد شده تهی است.
         /// </summary>
         public static string Error_NullInputModel {
             get {
@@ -151,7 +178,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OrderDetail can not be null.
+        ///   Looks up a localized string similar to جزئیات سفارش وارد شده تهی است.
         /// </summary>
         public static string Error_NullOrderDetail {
             get {
@@ -160,7 +187,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order not found.
+        ///   Looks up a localized string similar to سفارش یافت نشد.
         /// </summary>
         public static string Error_OrderNotFound {
             get {
@@ -169,7 +196,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The selected parent does not exist.
+        ///   Looks up a localized string similar to شاخه والد یافت نشد.
         /// </summary>
         public static string Error_ParentCategoryNotFound {
             get {
@@ -178,7 +205,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The ProductCategory has child.
+        ///   Looks up a localized string similar to دسته بندی دارای زیرشاخه است.
         /// </summary>
         public static string Error_ProductCategoryHasChild {
             get {
@@ -187,7 +214,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The product category has products.
+        ///   Looks up a localized string similar to دسته بندی دارای محصول است.
         /// </summary>
         public static string Error_ProductCategoryHasProduct {
             get {
@@ -196,7 +223,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Id and ParentId can not be same.
+        ///   Looks up a localized string similar to آی دی شاخه و والد نمی تواند برابر باشد.
         /// </summary>
         public static string Error_ProductCategorySameIdandParentId {
             get {
@@ -205,7 +232,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Product not found.
+        ///   Looks up a localized string similar to محصول یافت نشد.
         /// </summary>
         public static string Error_ProductNotFound {
             get {
@@ -214,7 +241,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The entered code already exists.
+        ///   Looks up a localized string similar to کد وارد شده تکراریست.
         /// </summary>
         public static string Error_RepetitiousCode {
             get {
@@ -223,7 +250,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Field is required.
+        ///   Looks up a localized string similar to فیلد اجباریست.
         /// </summary>
         public static string Error_RequiredField {
             get {
@@ -232,7 +259,34 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is a problem in fetching data from database.
+        ///   Looks up a localized string similar to دسترسی دارای کاربر است.
+        /// </summary>
+        public static string Error_RoleIsGranted {
+            get {
+                return ResourceManager.GetString("Error_RoleIsGranted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to دسترسی تکراریست.
+        /// </summary>
+        public static string Error_RoleNameAlreadyExist {
+            get {
+                return ResourceManager.GetString("Error_RoleNameAlreadyExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to دسترسی یافت نشد.
+        /// </summary>
+        public static string Error_RoleNotFound {
+            get {
+                return ResourceManager.GetString("Error_RoleNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to مشکلی در دریافت داده ها از پایگاه داده پیش آمده است.
         /// </summary>
         public static string Error_SelectAllFailed {
             get {
@@ -241,7 +295,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Seller not found.
+        ///   Looks up a localized string similar to فروشنده یافت نشد.
         /// </summary>
         public static string Error_SellerNotFound {
             get {
@@ -250,7 +304,16 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operation failed.
+        ///   Looks up a localized string similar to امکان انجام عملیات فقط با آی دی احراز هویت شده امکان پذیر است.
+        /// </summary>
+        public static string Error_UnauthorizedOwner {
+            get {
+                return ResourceManager.GetString("Error_UnauthorizedOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to عملیات ناموفق.
         /// </summary>
         public static string Error_UpdateDataFailed {
             get {
@@ -259,7 +322,79 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wrong buyer.
+        ///   Looks up a localized string similar to شماره موبایل تکراریست.
+        /// </summary>
+        public static string Error_UserCellPhoneAlreadyExist {
+            get {
+                return ResourceManager.GetString("Error_UserCellPhoneAlreadyExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ایمیل تکراریست.
+        /// </summary>
+        public static string Error_UserEmailAlreadyExist {
+            get {
+                return ResourceManager.GetString("Error_UserEmailAlreadyExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کاربر ادمین اصلی است.
+        /// </summary>
+        public static string Error_UserIsGodAdmin {
+            get {
+                return ResourceManager.GetString("Error_UserIsGodAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to فروشنده دارای سفارش است.
+        /// </summary>
+        public static string Error_UserIsSellerWithOrder {
+            get {
+                return ResourceManager.GetString("Error_UserIsSellerWithOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to نام کاربری تکراریست.
+        /// </summary>
+        public static string Error_UserNameAlreadyExist {
+            get {
+                return ResourceManager.GetString("Error_UserNameAlreadyExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کدملی تکراریست.
+        /// </summary>
+        public static string Error_UserNationalIdAlreadyExist {
+            get {
+                return ResourceManager.GetString("Error_UserNationalIdAlreadyExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کد ملی تایید شده قابل تغییر نیست.
+        /// </summary>
+        public static string Error_UserNationalIdIsConfirmed {
+            get {
+                return ResourceManager.GetString("Error_UserNationalIdIsConfirmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کاربر یافت نشد.
+        /// </summary>
+        public static string Error_UserNotFound {
+            get {
+                return ResourceManager.GetString("Error_UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to خریدار اشتباه است.
         /// </summary>
         public static string Error_WrongBuyer {
             get {
@@ -268,7 +403,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wrong seller.
+        ///   Looks up a localized string similar to فروشنده اشتباه است.
         /// </summary>
         public static string Error_WrongSeller {
             get {
@@ -277,7 +412,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Quantity can not be 0 or less.
+        ///   Looks up a localized string similar to مقدار نمی تواند صفر یا کمتر باشد.
         /// </summary>
         public static string Error_ZeroOrLessQuantity {
             get {
@@ -286,7 +421,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UnitPrice can not be 0 or less.
+        ///   Looks up a localized string similar to قیمت واحد نمی تواند صفر یا کمتر باشد.
         /// </summary>
         public static string Error_ZeroOrLessUnitPrice {
             get {

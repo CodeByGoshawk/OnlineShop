@@ -1,8 +1,7 @@
 ﻿using OnlineShop.Application.Frameworks.DtoFrameworks.Abstracts;
-using OnlineShop.Domain.Aggregates.SaleAggregates;
 using OnlineShop.Domain.Aggregates.UserManagementAggregates;
 
-namespace OnlineShop.Application.Dtos.SaleDtos.OrderHeaderDtos;
+namespace OnlineShop.Application.Dtos.SaleDtos.OrderDtos;
 public class GetOrderResultAppDto : IIdentifiedDto<Guid>, ICodedDto<string>, ICreatedDto, IModifiedDto
 {
     public Guid Id { get; set; }

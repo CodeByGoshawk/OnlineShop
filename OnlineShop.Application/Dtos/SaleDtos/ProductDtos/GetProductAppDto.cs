@@ -3,5 +3,5 @@
 namespace OnlineShop.Application.Dtos.SaleDtos.ProductDtos;
 public class GetProductAppDto : IIdentifiedDto<Guid>
 {
-    public Guid Id { get ; set; }
+    public Guid Id { get; set; }
 }

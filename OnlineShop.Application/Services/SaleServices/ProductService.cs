@@ -1,5 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using OnlineShop.Application.Contracts;
+﻿using OnlineShop.Application.Contracts.Sale;
 using OnlineShop.Application.Dtos.SaleDtos.ProductDtos;
 using OnlineShop.Domain.Aggregates.SaleAggregates;
 using OnlineShop.RepositoryDesignPattern.Contracts;
@@ -8,7 +7,7 @@ using PublicTools.Tools;
 using ResponseFramewrok;
 
 namespace OnlineShop.Application.Services.SaleServices;
-public class ProductService(IProductRepository productRepository,IProductCategoryRepository productCategoryRepository) : IProductService
+public class ProductService(IProductRepository productRepository, IProductCategoryRepository productCategoryRepository) : IProductService
 {
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IProductCategoryRepository _productCategoryRepository = productCategoryRepository;
@@ -58,7 +57,7 @@ public class ProductService(IProductRepository productRepository,IProductCategor
                 ModifyDatePersian = product.ModifyDatePersian,
                 ProductCategory = product.ProductCategory
             };
-            resultDto.GetResultDtosList.Add(getResultDto);
+            resultDto.GetResultDtos.Add(getResultDto);
         }
 
         return new Response<GetAllProductsResultAppDto>(resultDto);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using OnlineShop.Domain.Aggregates.SaleAggregates;
 using OnlineShop.Domain.Frameworks.Abstracts;
 
 namespace OnlineShop.Domain.Aggregates.UserManagementAggregates;
@@ -7,7 +8,7 @@ public class OnlineShopUser : IdentityUser, IActiveEntity, ICreatedEntity, IModi
 {
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
-    public byte[]? Picture { get; set; }
+    public string? Picture { get; set; }
     public string? Location { get; set; }
 
     public string? NationalId { get; set; }

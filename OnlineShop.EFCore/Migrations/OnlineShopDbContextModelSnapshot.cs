@@ -147,18 +147,14 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedDateGregorian")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 4, 19, 14, 15, 27, 230, DateTimeKind.Local).AddTicks(7588));
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedDatePersian")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("1403/1/31 14:15:27.2308945");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsModified")
                         .ValueGeneratedOnAdd()
@@ -176,6 +172,9 @@ namespace OnlineShop.EFCore.Migrations
                     b.Property<string>("ModifyDatePersian")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("OnlineShopUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("SellerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -190,6 +189,11 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.HasIndex("BuyerId");
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("OnlineShopUserId");
+
                     b.HasIndex("SellerId");
 
                     b.ToTable("OrderHeader", "Sale");
@@ -203,18 +207,14 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedDateGregorian")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 4, 19, 14, 15, 27, 233, DateTimeKind.Local).AddTicks(835));
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedDatePersian")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("1403/1/31 14:15:27.2332273");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsModified")
                         .ValueGeneratedOnAdd()
@@ -235,6 +235,10 @@ namespace OnlineShop.EFCore.Migrations
                     b.Property<int>("ProductCategoryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("SellerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("SoftDeleteDateGregorian")
                         .HasColumnType("datetime2");
 
@@ -250,7 +254,12 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
                     b.HasIndex("ProductCategoryId");
+
+                    b.HasIndex("SellerId");
 
                     b.ToTable("Product", "Sale");
                 });
@@ -287,10 +296,12 @@ namespace OnlineShop.EFCore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -298,8 +309,7 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", "UserManagement");
 
@@ -317,6 +327,20 @@ namespace OnlineShop.EFCore.Migrations
                             ConcurrencyStamp = "2",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            ConcurrencyStamp = "3",
+                            Name = "Seller",
+                            NormalizedName = "SELLER"
+                        },
+                        new
+                        {
+                            Id = "4",
+                            ConcurrencyStamp = "4",
+                            Name = "Buyer",
+                            NormalizedName = "BUYER"
                         });
                 });
 
@@ -326,7 +350,9 @@ namespace OnlineShop.EFCore.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("CellPhone")
                         .IsRequired()
@@ -337,22 +363,21 @@ namespace OnlineShop.EFCore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDateGregorian")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 4, 19, 14, 15, 27, 235, DateTimeKind.Local).AddTicks(809));
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedDatePersian")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("1403/1/31 14:15:27.2351882");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -407,24 +432,29 @@ namespace OnlineShop.EFCore.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NormalizedEmail")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
-                    b.Property<byte[]>("Picture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("Picture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -436,9 +466,12 @@ namespace OnlineShop.EFCore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -447,16 +480,22 @@ namespace OnlineShop.EFCore.Migrations
                     b.HasIndex("CellPhone")
                         .IsUnique();
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.HasIndex("NationalId")
                         .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
+                        .IsUnique()
                         .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("AspNetUsers", "UserManagement");
 
@@ -466,10 +505,11 @@ namespace OnlineShop.EFCore.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CellPhone = "09120000000",
-                            ConcurrencyStamp = "76ace3a5-d4dc-4cf1-9719-b9f11d3bbb9b",
-                            CreatedDateGregorian = new DateTime(2024, 4, 19, 14, 15, 27, 235, DateTimeKind.Local).AddTicks(6320),
-                            CreatedDatePersian = "1403/1/31 14:15:27.2356324",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "6de8ae29-db0a-4d11-b36e-9b6300568762",
+                            CreatedDateGregorian = new DateTime(2024, 5, 24, 18, 55, 4, 591, DateTimeKind.Local).AddTicks(2305),
+                            CreatedDatePersian = "1403/3/4 18:55:04.5912340",
+                            Email = "Shahbazi.amh@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Amir",
                             IsActive = false,
                             IsCellPhoneConfirmed = true,
@@ -479,9 +519,13 @@ namespace OnlineShop.EFCore.Migrations
                             LastName = "Shahbazi",
                             LockoutEnabled = false,
                             NationalId = "0440000000",
+                            NormalizedEmail = "SHAHBAZI.AMH@GMAIL.COM",
+                            NormalizedUserName = "A.SHAHBAZI",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBsPaFbYCFgUpX4oZWXe7pe1Z36+F3So+gLwDppB5p23w3+ALQkozQJJVM17Ot2Dtw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8efae989-007b-4655-ba4b-675d0f9d9836",
-                            TwoFactorEnabled = false
+                            SecurityStamp = "971da074-48a9-4ee6-8f8d-223eededb906",
+                            TwoFactorEnabled = false,
+                            UserName = "a.Shahbazi"
                         });
                 });
 
@@ -570,6 +614,10 @@ namespace OnlineShop.EFCore.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("OnlineShop.Domain.Aggregates.UserManagementAggregates.OnlineShopUser", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("OnlineShopUserId");
+
                     b.HasOne("OnlineShop.Domain.Aggregates.UserManagementAggregates.OnlineShopUser", "Seller")
                         .WithMany()
                         .HasForeignKey("SellerId")
@@ -589,7 +637,15 @@ namespace OnlineShop.EFCore.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("OnlineShop.Domain.Aggregates.UserManagementAggregates.OnlineShopUser", "Seller")
+                        .WithMany("Products")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("ProductCategory");
+
+                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("OnlineShop.Domain.Aggregates.SaleAggregates.ProductCategory", b =>
@@ -623,6 +679,13 @@ namespace OnlineShop.EFCore.Migrations
 
             modelBuilder.Entity("OnlineShop.Domain.Aggregates.SaleAggregates.ProductCategory", b =>
                 {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("OnlineShop.Domain.Aggregates.UserManagementAggregates.OnlineShopUser", b =>
+                {
+                    b.Navigation("Orders");
+
                     b.Navigation("Products");
                 });
 #pragma warning restore 612, 618

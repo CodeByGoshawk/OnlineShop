@@ -30,7 +30,7 @@ public class BaseRepository<TDbContext, TEntity, TPrimaryKey>(TDbContext dbConte
         var entity = await _dbSet.FindAsync(id);
         return entity is not null ? new Response<TEntity>(entity) : new Response<TEntity>(MessageResource.Error_FindEntityFailed);
     }
-    public virtual async Task<IResponse<List<TEntity>>> SelectAsync()
+    public virtual async Task<IResponse<List<TEntity>>> SelectAllAsync()
     {
         var entityList = await _dbSet.AsNoTracking().ToListAsync();
         return new Response<List<TEntity>>(entityList);

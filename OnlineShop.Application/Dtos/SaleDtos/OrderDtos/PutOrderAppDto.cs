@@ -1,6 +1,6 @@
 ﻿using OnlineShop.Application.Frameworks.DtoFrameworks.Abstracts;
 
-namespace OnlineShop.Application.Dtos.SaleDtos.OrderHeaderDtos;
+namespace OnlineShop.Application.Dtos.SaleDtos.OrderDtos;
 public class PutOrderAppDto : IIdentifiedDto<Guid>, ICodedDto<string>
 {
     public Guid Id { get; set; }

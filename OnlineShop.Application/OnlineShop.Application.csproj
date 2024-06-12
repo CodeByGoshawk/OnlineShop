@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\UserManagementDtos\" />
+    <Folder Include="Dtos\UserManagementDtos\AccountDtos\" />
+    <Folder Include="Dtos\UserManagementDtos\UserDtos\" />
     <Folder Include="Frameworks\ServiceFrameworks\Bases\" />
-    <Folder Include="Services\UserManagementServices\" />
   </ItemGroup>
 
   <ItemGroup>

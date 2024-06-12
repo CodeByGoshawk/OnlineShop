@@ -19,6 +19,16 @@ public static class DatabaseConstants
         public const string AdminName = "Admin";
         public const string AdminNormalizedName = "ADMIN";
         public const string AdminConcurrencyStamp = "2";
+
+        public const string SellerId = "3";
+        public const string SellerName = "Seller";
+        public const string SellerNormalizedName = "SELLER";
+        public const string SellerConcurrencyStamp = "3";
+
+        public const string BuyerId = "4";
+        public const string BuyerName = "Buyer";
+        public const string BuyerNormalizedName = "BUYER";
+        public const string BuyerConcurrencyStamp = "4";
     }
 
     public static class GodAdminUsers
@@ -30,5 +40,6 @@ public static class DatabaseConstants
         public const string ShahbaziUserName = "a.Shahbazi";
         public const string ShahbaziPassword = "Amir12345";
         public const string ShahbaziCellPhone = "09120000000";
+        public const string ShahbaziEmail = "Shahbazi.amh@gmail.com";
     }
 }

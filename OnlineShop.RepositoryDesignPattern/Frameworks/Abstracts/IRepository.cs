@@ -7,7 +7,7 @@ public interface IRepository<TEntity, in TPrimaryKey> where TEntity : class
     Task<IResponse<object>> InsertAsync(TEntity entity);
 
     // Read
-    Task<IResponse<List<TEntity>>> SelectAsync();
+    Task<IResponse<List<TEntity>>> SelectAllAsync();
     Task<IResponse<TEntity>> SelectByIdAsync(TPrimaryKey id);
 
     // Update

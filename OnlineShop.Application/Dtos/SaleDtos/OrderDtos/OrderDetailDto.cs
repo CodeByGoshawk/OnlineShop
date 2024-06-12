@@ -1,4 +1,4 @@
-﻿namespace OnlineShop.Application.Dtos.SaleDtos.OrderHeaderDtos;
+﻿namespace OnlineShop.Application.Dtos.SaleDtos.OrderDtos;
 
 public class OrderDetailDto
 {

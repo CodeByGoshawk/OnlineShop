@@ -1,6 +1,6 @@
 ﻿using OnlineShop.Application.Frameworks.DtoFrameworks.Abstracts;
 
-namespace OnlineShop.Application.Dtos.SaleDtos.OrderHeaderDtos;
+namespace OnlineShop.Application.Dtos.SaleDtos.OrderDtos;
 public class PostOrderAppDto : ICodedDto<string>
 {
     public string Code { get; set; }

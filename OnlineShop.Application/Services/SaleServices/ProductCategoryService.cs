@@ -1,4 +1,4 @@
-﻿using OnlineShop.Application.Contracts;
+﻿using OnlineShop.Application.Contracts.Sale;
 using OnlineShop.Application.Dtos.SaleDtos.ProductCategoryDtos;
 using OnlineShop.Domain.Aggregates.SaleAggregates;
 using OnlineShop.RepositoryDesignPattern.Contracts;
@@ -6,7 +6,7 @@ using PublicTools.Resources;
 using ResponseFramewrok;
 
 namespace OnlineShop.Application.Services.SaleServices;
-public class ProductCategoryService(IProductCategoryRepository productCategoryRepository,IProductRepository productRepository) : IProductCategoryService
+public class ProductCategoryService(IProductCategoryRepository productCategoryRepository, IProductRepository productRepository) : IProductCategoryService
 {
     private readonly IProductCategoryRepository _productCategoryRepository = productCategoryRepository;
     private readonly IProductRepository _productRepository = productRepository;
@@ -40,7 +40,7 @@ public class ProductCategoryService(IProductCategoryRepository productCategoryRe
                 Title = productCategory.Title!,
                 ParentId = productCategory.ParentId,
             };
-            resultDto.GetResultDtosList.Add(getResultDto);
+            resultDto.GetResultDtos.Add(getResultDto);
         }
 
         return new Response<GetAllProductCategoriesResultAppDto>(resultDto);
@@ -52,10 +52,10 @@ public class ProductCategoryService(IProductCategoryRepository productCategoryRe
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
         if (model.Title is null) return new Response<object>(MessageResource.Error_RequiredField);
 
-        if ( model.ParentId is not null and not 0)
+        if (model.ParentId is not null and not 0)
         {
             var selectParentOperationResponse = await _productCategoryRepository.SelectByIdAsync((int)model.ParentId);
-            if(!selectParentOperationResponse.IsSuccessful) return new Response<object>(MessageResource.Error_ParentCategoryNotFound);
+            if (!selectParentOperationResponse.IsSuccessful) return new Response<object>(MessageResource.Error_ParentCategoryNotFound);
         }
 
         var newProductCategory = new ProductCategory
