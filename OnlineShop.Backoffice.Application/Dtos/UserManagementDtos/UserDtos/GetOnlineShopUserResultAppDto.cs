@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using PublicTools.Attributes;
+﻿using PublicTools.Attributes;
 
 namespace OnlineShop.Backoffice.Application.Dtos.UserManagementDtos.UserDtos;
 public class GetOnlineShopUserResultAppDto

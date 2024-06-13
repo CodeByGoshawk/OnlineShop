@@ -4,7 +4,6 @@ using OnlineShop.Backoffice.Application.Dtos.SaleDtos.ProductDtos;
 using OnlineShop.Domain.Aggregates.SaleAggregates;
 using OnlineShop.Domain.Aggregates.UserManagementAggregates;
 using OnlineShop.RepositoryDesignPattern.Contracts;
-using OnlineShop.RepositoryDesignPattern.Services.SaleRepositories;
 using PublicTools.Constants;
 using PublicTools.Resources;
 using PublicTools.Tools;
@@ -25,7 +24,7 @@ public class ProductService
     public async Task<IResponse<GetProductResultAppDto>> Get(GetProductAppDto model)
     {
         if (model is null) return new Response<GetProductResultAppDto>(MessageResource.Error_NullInputModel);
-        var selectProductResponse = await _productRepository.SelectByIdAsync(model.Id);
+        var selectProductResponse = await _productRepository.SelectNonDeletedByIdAsync(model.Id);
         if (!selectProductResponse.IsSuccessful) return new Response<GetProductResultAppDto>(selectProductResponse.ErrorMessage!);
 
         var result = new GetProductResultAppDto
@@ -105,7 +104,7 @@ public class ProductService
 
     public async Task<IResponse<GetProductsRangeResultAppDto>> GetRangeBySeller(GetProductsRangeBySellerAppDto model)
     {
-        var selectProductResponse = await _productRepository.SelectBySellerAsync(model.SellerId);
+        var selectProductResponse = await _productRepository.SelectNonDeletedsBySellerAsync(model.SellerId);
         if (!selectProductResponse.IsSuccessful) return new Response<GetProductsRangeResultAppDto>(selectProductResponse.ErrorMessage!);
 
         var result = new GetProductsRangeResultAppDto();
@@ -137,7 +136,7 @@ public class ProductService
         if (!_productCategoryRepository.SelectByIdAsync(model.ProductCategoryId).Result.IsSuccessful) return new Response<object>(MessageResource.Error_CategoryNotFound);
 
         var productSeller = await _userManager.FindByIdAsync(model.SellerId);
-        if (productSeller is null) return new Response<object>(MessageResource.Error_SellerNotFound);
+        if (productSeller is null || productSeller.IsSoftDeleted) return new Response<object>(MessageResource.Error_SellerNotFound);
         if (!_userManager.IsInRoleAsync(productSeller, DatabaseConstants.DefaultRoles.SellerName).Result) return new Response<object>(MessageResource.Error_WrongSeller);
 
         string productCode;
@@ -172,7 +171,7 @@ public class ProductService
         if (model.UnitPrice <= 0) return new Response<object>(MessageResource.Error_ZeroOrLessUnitPrice);
         if (!_productCategoryRepository.SelectByIdAsync(model.ProductCategoryId).Result.IsSuccessful) return new Response<object>(MessageResource.Error_CategoryNotFound);
 
-        var selectProductResponse = await _productRepository.SelectByIdAsync(model.Id);
+        var selectProductResponse = await _productRepository.SelectNonDeletedByIdAsync(model.Id);
         if (!selectProductResponse.IsSuccessful) return new Response<object>(selectProductResponse.ErrorMessage!);
 
         var updatedProduct = selectProductResponse.ResultModel;
@@ -194,7 +193,7 @@ public class ProductService
     {
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
-        var selectProductResponse = await _productRepository.SelectByIdAsync(model.Id);
+        var selectProductResponse = await _productRepository.SelectNonDeletedByIdAsync(model.Id);
         if (!selectProductResponse.IsSuccessful) return new Response<object>(selectProductResponse.ErrorMessage!);
 
         var deletedProduct = selectProductResponse.ResultModel;

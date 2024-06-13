@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Domain.Aggregates.SaleAggregates;
 using PublicTools.Constants;
-using PublicTools.Tools;
 
 namespace OnlineShop.EFCore.Configurations.SaleConfigurations;
 

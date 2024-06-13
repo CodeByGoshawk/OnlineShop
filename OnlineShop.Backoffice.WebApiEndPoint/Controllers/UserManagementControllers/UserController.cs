@@ -2,16 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Backoffice.Application.Contracts.UserManagement;
 using OnlineShop.Backoffice.Application.Dtos.UserManagementDtos.UserDtos;
-using OnlineShop.Backoffice.WebApiEndPoint.Authorizations.Handlers;
 using PublicTools.Constants;
 using PublicTools.Resources;
-using System.Security.Claims;
 
 namespace OnlineShop.Backoffice.WebApiEndPoint.Controllers.UserManagementControllers;
 
 [ApiController]
 [Route("api/User")]
-public class UserController(IUserService userService , IAuthorizationService authorizationService) : Controller
+public class UserController(IUserService userService, IAuthorizationService authorizationService) : Controller
 {
     private readonly IUserService _userService = userService;
     private readonly IAuthorizationService _authorizationService = authorizationService;
@@ -78,9 +76,9 @@ public class UserController(IUserService userService , IAuthorizationService aut
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User,model,PolicyConstants.OwnerOnlyPolicy);
+        var authorizationResult = await _authorizationService.AuthorizeAsync(User, model, PolicyConstants.OwnerOnlyPolicy);
         if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
-;
+        ;
         var postOperationResponse = await _userService.EditSelf(model);
         return postOperationResponse.IsSuccessful ? Ok(postOperationResponse.Message) : Problem(postOperationResponse.ErrorMessage, statusCode: (int)postOperationResponse.HttpStatusCode);
     }

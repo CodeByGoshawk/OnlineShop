@@ -1,21 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
-using OnlineShop.Backoffice.Application.Contracts.Sale;
+﻿using OnlineShop.Backoffice.Application.Contracts.Sale;
 using OnlineShop.Backoffice.Application.Dtos.SaleDtos.OrderDtos;
 using OnlineShop.Backoffice.Application.Dtos.UserManagementDtos.UserDtos;
 using OnlineShop.Domain.Aggregates.SaleAggregates;
-using OnlineShop.Domain.Aggregates.UserManagementAggregates;
 using OnlineShop.RepositoryDesignPattern.Contracts;
-using PublicTools.Constants;
 using PublicTools.Resources;
 using PublicTools.Tools;
 using ResponseFramewrok;
 
 namespace OnlineShop.Backoffice.Application.Services.SaleServices;
-public class OrderService(IOrderRepository orderRepository, IProductRepository productRepository, UserManager<OnlineShopUser> userManager) : IOrderService
+public class OrderService(IOrderRepository orderRepository, IProductRepository productRepository) : IOrderService
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IProductRepository _productRepository = productRepository;
-    private readonly UserManager<OnlineShopUser> _userManager = userManager;
 
     public async Task<IResponse<GetOrdersRangeResultAppDto>> GetAllWithPrivateData()
     {
@@ -55,7 +51,7 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
     public async Task<IResponse<GetOrdersRangeResultAppDto>> GetRangeBySeller(GetOrdersRangeBySellerAppDto model)
     {
         if (model is null) return new Response<GetOrdersRangeResultAppDto>(MessageResource.Error_NullInputModel);
-        var selectOrdersResponse = await _orderRepository.SelectRangeBySellerAsync(model.SellerId);
+        var selectOrdersResponse = await _orderRepository.SelectNonDeletedsBySellerAsync(model.SellerId);
         if (!selectOrdersResponse.IsSuccessful) return new Response<GetOrdersRangeResultAppDto>(selectOrdersResponse.ErrorMessage!);
 
         var result = new GetOrdersRangeResultAppDto();
@@ -128,7 +124,7 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
     public async Task<IResponse<GetOrderResultAppDto>> GetWithSellerOrderDetails(GetOrderAppDto model)
     {
         if (model is null) return new Response<GetOrderResultAppDto>(MessageResource.Error_NullInputModel);
-        var selectOrdersResponse = await _orderRepository.SelectByIdAsync(model.Id);
+        var selectOrdersResponse = await _orderRepository.SelectNonDeletedByIdAsync(model.Id);
         if (!selectOrdersResponse.IsSuccessful) return new Response<GetOrderResultAppDto>(selectOrdersResponse.ErrorMessage!);
 
         var result = new GetOrderResultAppDto
@@ -169,7 +165,7 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
 
         if (model.OrderDetailDtos.Count == 0) return new Response<object>(MessageResource.Error_EmptyOrderDetails);
 
-        var selectOrderResponse = await _orderRepository.SelectByIdAsync(model.Id);
+        var selectOrderResponse = await _orderRepository.SelectNonDeletedByIdAsync(model.Id);
         if (!selectOrderResponse.IsSuccessful) return new Response<object>(MessageResource.Error_OrderNotFound);
 
         var updatedOrder = selectOrderResponse.ResultModel;
@@ -177,8 +173,6 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
         updatedOrder!.IsModified = true;
         updatedOrder!.ModifyDateGregorian = DateTime.Now;
         updatedOrder!.ModifyDatePersian = DateTime.Now.ConvertToPersian();
-
-        await _orderRepository.ClearOrderDetails(updatedOrder);
         updatedOrder!.OrderDetails.Clear();
 
         foreach (var orderDetailDto in model.OrderDetailDtos)
@@ -212,7 +206,7 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
     {
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
-        var selectOrderResponse = await _orderRepository.SelectByIdAsync(model.Id);
+        var selectOrderResponse = await _orderRepository.SelectNonDeletedByIdAsync(model.Id);
         if (!selectOrderResponse.IsSuccessful) return new Response<object>(selectOrderResponse.ErrorMessage!);
 
         var deletedOrder = selectOrderResponse.ResultModel;

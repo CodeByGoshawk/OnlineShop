@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using OnlineShop.Domain.Aggregates.UserManagementAggregates;
-using OnlineShop.Office.Application.Contracts.Sale;
+﻿using OnlineShop.Office.Application.Contracts.Sale;
 using OnlineShop.Office.Application.Dtos.SaleDtos.ProductDtos;
 using OnlineShop.RepositoryDesignPattern.Contracts;
 using PublicTools.Resources;
@@ -16,7 +14,7 @@ public class ProductService
 
     public async Task<IResponse<GetProductsRangeResultAppDto>> GetAll()
     {
-        var selectProductResponse = await _productRepository.SelectAllAsync();
+        var selectProductResponse = await _productRepository.SelectAllNonDeletedsAsync();
         if (!selectProductResponse.IsSuccessful) return new Response<GetProductsRangeResultAppDto>(selectProductResponse.ErrorMessage!);
 
         var result = new GetProductsRangeResultAppDto();
@@ -39,7 +37,7 @@ public class ProductService
     public async Task<IResponse<GetProductResultAppDto>> Get(GetProductAppDto model)
     {
         if (model is null) return new Response<GetProductResultAppDto>(MessageResource.Error_NullInputModel);
-        var selectProductResponse = await _productRepository.SelectByIdAsync(model.Id);
+        var selectProductResponse = await _productRepository.SelectNonDeletedByIdAsync(model.Id);
         if (!selectProductResponse.IsSuccessful) return new Response<GetProductResultAppDto>(selectProductResponse.ErrorMessage!);
 
         var result = new GetProductResultAppDto

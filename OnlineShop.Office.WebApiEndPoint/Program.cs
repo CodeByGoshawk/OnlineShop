@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OnlineShop.Backoffice.WebApiEndPoint.Authorizations.Handlers;
+using OnlineShop.Backoffice.WebApiEndPoint.Authorizations.Requirements;
 using OnlineShop.Domain.Aggregates.UserManagementAggregates;
 using OnlineShop.EFCore;
 using OnlineShop.Office.Application.Contracts.Sale;
@@ -10,6 +13,7 @@ using OnlineShop.Office.Application.Services.SaleServices;
 using OnlineShop.Office.Application.Services.UserManagementServices;
 using OnlineShop.RepositoryDesignPattern.Contracts;
 using OnlineShop.RepositoryDesignPattern.Services.SaleRepositories;
+using PublicTools.Constants;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +51,11 @@ builder.Services.Configure<IdentityOptions>(c =>
     c.Password.RequiredLength = 3;
 });
 
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy(PolicyConstants.OwnerOnlyPolicy, policy =>
+        policy.Requirements.Add(new OwnerOnlyRequirement()));
+
+builder.Services.AddSingleton<IAuthorizationHandler, OwnerOnlyAuthorizationHandler>();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();

@@ -9,7 +9,7 @@ public interface IUserService
     Task<IResponse<GetOnlineShopUserResultAppDto>> GetWithPrivateData(GetOnlineShopUserAppDto model);
     Task<IResponse<GetAllOnlineShopUsersResultAppDto>> GetNonAdminsWithPrivateData();
     Task<IResponse<GetAllOnlineShopUsersResultAppDto>> GetAllWithPrivateData();
-    
+
     //Task<IResponse<GetAllOnlineShopUsersResultAppDto>> GetSellers();
 
     Task<IResponse<object>> Register(RegisterOnlineShopUserAppDto model);

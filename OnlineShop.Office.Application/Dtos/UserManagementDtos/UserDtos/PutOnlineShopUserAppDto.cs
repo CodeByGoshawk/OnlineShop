@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PublicTools.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace OnlineShop.Office.Application.Dtos.UserManagementDtos.UserDtos;
-public class PutOnlineShopUserPropertiesAppDto
+public class PutOnlineShopUserAppDto
 {
+    [OwnerId]
     [Required(ErrorMessage = "Id is required")]
     public string Id { get; set; }
 

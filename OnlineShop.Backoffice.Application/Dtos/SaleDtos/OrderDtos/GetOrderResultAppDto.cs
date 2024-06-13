@@ -1,5 +1,4 @@
 ﻿using OnlineShop.Backoffice.Application.Dtos.UserManagementDtos.UserDtos;
-using OnlineShop.Domain.Aggregates.UserManagementAggregates;
 
 namespace OnlineShop.Backoffice.Application.Dtos.SaleDtos.OrderDtos;
 public class GetOrderResultAppDto

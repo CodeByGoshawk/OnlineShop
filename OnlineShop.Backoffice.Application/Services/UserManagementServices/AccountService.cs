@@ -21,7 +21,7 @@ public class AccountService(UserManager<OnlineShopUser> userManager, IConfigurat
         if (model is null) return new Response<LoginResultAppDto>(MessageResource.Error_NullInputModel);
 
         var user = await _userManager.FindByNameAsync(model.UserName);
-        if (user is null || !await _userManager.CheckPasswordAsync(user, model.Password)) return new Response<LoginResultAppDto>(MessageResource.Error_AuthenticationFailed);
+        if (user is null || user.IsSoftDeleted || !await _userManager.CheckPasswordAsync(user, model.Password)) return new Response<LoginResultAppDto>(MessageResource.Error_AuthenticationFailed);
 
         List<Claim> authenticationClaims = [new(ClaimTypes.Sid, user.Id!)];
 
@@ -45,8 +45,8 @@ public class AccountService(UserManager<OnlineShopUser> userManager, IConfigurat
         var token = new JwtSecurityToken
             (
                 expires: DateTime.Now.AddHours(1),
-                issuer : _configuration["JWT:Issuer"],
-                audience : _configuration["JWT:Audience"],
+                issuer: _configuration["JWT:Issuer"],
+                audience: _configuration["JWT:Audience"],
                 claims: claims,
                 signingCredentials: signingCredentials
             );

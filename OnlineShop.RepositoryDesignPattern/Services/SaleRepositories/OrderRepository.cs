@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Aggregates.SaleAggregates;
-using OnlineShop.Domain.Aggregates.UserManagementAggregates;
 using OnlineShop.EFCore;
 using OnlineShop.RepositoryDesignPattern.Contracts;
 using OnlineShop.RepositoryDesignPattern.Frameworks.Bases;
 using PublicTools.Resources;
 using ResponseFramewrok;
-using System.Collections.Generic;
 
 namespace OnlineShop.RepositoryDesignPattern.Services.SaleRepositories;
 public class OrderRepository(OnlineShopDbContext dbContext) : BaseRepository<OnlineShopDbContext, OrderHeader, Guid>(dbContext), IOrderRepository
@@ -20,7 +18,7 @@ public class OrderRepository(OnlineShopDbContext dbContext) : BaseRepository<Onl
         return entity is not null ? new Response<List<OrderHeader>>(entity) : new Response<List<OrderHeader>>(MessageResource.Error_FindEntityFailed);
     }
 
-    public async Task<IResponse<IEnumerable<OrderHeader>>> SelectRangeBySellerAsync(string sellerId)
+    public async Task<IResponse<IEnumerable<OrderHeader>>> SelectNonDeletedsBySellerAsync(string sellerId)
     {
         if (sellerId is null) return new Response<IEnumerable<OrderHeader>>(MessageResource.Error_NullInputCode);
         var sellerOrders = await _dbSet
@@ -32,7 +30,7 @@ public class OrderRepository(OnlineShopDbContext dbContext) : BaseRepository<Onl
         return new Response<IEnumerable<OrderHeader>>(sellerOrders);
     }
 
-    public async Task<IResponse<IEnumerable<OrderHeader>>> SelectRangeByBuyerAsync(string buyerId)
+    public async Task<IResponse<IEnumerable<OrderHeader>>> SelectNonDeletedsByBuyerAsync(string buyerId)
     {
         if (buyerId is null) return new Response<IEnumerable<OrderHeader>>(MessageResource.Error_NullInputCode);
         var buyerOrders = await _dbSet
@@ -52,6 +50,16 @@ public class OrderRepository(OnlineShopDbContext dbContext) : BaseRepository<Onl
         return order is not null ? new Response<OrderHeader>(order) : new Response<OrderHeader>(MessageResource.Error_FindEntityFailed);
     }
 
+    public async Task<IResponse<OrderHeader>> SelectNonDeletedByIdAsync(Guid id)
+    {
+        var order = await _dbSet
+            .Include(e => e.OrderDetails).ThenInclude(e => e.Product!.SellerId)
+            .Include(e => e.Buyer)
+            .AsNoTracking()
+            .SingleOrDefaultAsync(oh => oh.Id == id && !oh.IsSoftDeleted);
+        return order is not null ? new Response<OrderHeader>(order) : new Response<OrderHeader>(MessageResource.Error_FindEntityFailed);
+    }
+
     public async Task<IResponse<OrderHeader>> SelectByCodeAsync(string code)
     {
         if (code is null) return new Response<OrderHeader>(MessageResource.Error_NullInputCode);
@@ -61,12 +69,12 @@ public class OrderRepository(OnlineShopDbContext dbContext) : BaseRepository<Onl
         return order is null ? new Response<OrderHeader>(MessageResource.Error_FindEntityFailed) : new Response<OrderHeader>(order);
     }
 
-    public async Task<IResponse<object>> ClearOrderDetails(OrderHeader entity)
+    public override Task<IResponse<object>> UpdateAsync(OrderHeader entity)
     {
-        _dbContext.ChangeTracker.Entries<OnlineShopUser>().ToList().ForEach(u => u.State = EntityState.Detached);
+        //_dbContext.ChangeTracker.Entries<OnlineShopUser>().ToList().ForEach(u => u.State = EntityState.Detached);
 
-        _dbContext.RemoveRange(entity.OrderDetails);
-
-        return new Response<object>(entity);
+        var oldOrderDetails = _dbContext.Set<OrderDetail>().Where(od => od.OrderHeaderId == entity.Id);
+        _dbContext.RemoveRange(oldOrderDetails);
+        return base.UpdateAsync(entity);
     }
 }

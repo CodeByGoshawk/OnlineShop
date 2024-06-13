@@ -21,7 +21,7 @@ public class AccountService(UserManager<OnlineShopUser> userManager, IConfigurat
         if (model is null) return new Response<LoginResultAppDto>(MessageResource.Error_NullInputModel);
 
         var user = await _userManager.FindByNameAsync(model.UserName);
-        if (user is null || !await _userManager.CheckPasswordAsync(user, model.Password)) return new Response<LoginResultAppDto>(MessageResource.Error_AuthenticationFailed);
+        if (user is null || user.IsSoftDeleted || !await _userManager.CheckPasswordAsync(user, model.Password)) return new Response<LoginResultAppDto>(MessageResource.Error_AuthenticationFailed);
 
         List<Claim> authenticationClaims = [new(ClaimTypes.Sid, user.Id!)];
         _userManager.GetRolesAsync(user).Result.ToList().ForEach(role => authenticationClaims.Add(new(ClaimTypes.Role, role)));

@@ -16,7 +16,8 @@ public class ProductCategoryService(IProductCategoryRepository productCategoryRe
         {
             Id = selectCategoryResponse.ResultModel!.Id,
             ParentId = selectCategoryResponse.ResultModel.ParentId,
-            Title = selectCategoryResponse.ResultModel.Title!
+            Title = selectCategoryResponse.ResultModel.Title!,
+            Products = selectCategoryResponse.ResultModel.Products
         };
         return new Response<GetProductCategoryResultAppDto>(resultDto);
     }

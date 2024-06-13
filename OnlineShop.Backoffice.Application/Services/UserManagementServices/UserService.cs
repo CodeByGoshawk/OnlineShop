@@ -109,7 +109,7 @@ public class UserService(RoleManager<OnlineShopRole> roleManager, UserManager<On
         #region[Guards]
         if (model is null) return new Response<GetOnlineShopUserResultAppDto>(MessageResource.Error_NullInputModel);
         var selectedUser = await _userManager.FindByIdAsync(model.Id);
-        if (selectedUser is null) return new Response<GetOnlineShopUserResultAppDto>(MessageResource.Error_UserNotFound);
+        if (selectedUser is null || selectedUser.IsSoftDeleted) return new Response<GetOnlineShopUserResultAppDto>(MessageResource.Error_UserNotFound);
         #endregion
 
         var getUserResultDto = new GetOnlineShopUserResultAppDto
@@ -268,17 +268,18 @@ public class UserService(RoleManager<OnlineShopRole> roleManager, UserManager<On
         #region[Guards]
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
-        if (_userManager.Users.SingleOrDefaultAsync(user => user.NormalizedUserName == model.UserName.ToUpper()).Result is not null)
-            return new Response<object>(MessageResource.Error_UserNameAlreadyExist);
+        OnlineShopUser? existingUser;
+        existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.NormalizedUserName == model.UserName.ToUpper());
+        if (existingUser is not null) return new Response<object>(MessageResource.Error_UserNameAlreadyExist);
 
-        if (_userManager.Users.SingleOrDefaultAsync(user => user.NormalizedEmail == model.Email.ToUpper()).Result is not null)
-            return new Response<object>(MessageResource.Error_UserEmailAlreadyExist);
+        existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.NormalizedEmail == model.Email.ToUpper());
+        if (existingUser is not null && !existingUser.IsSoftDeleted) return new Response<object>(MessageResource.Error_UserEmailAlreadyExist);
 
-        if (_userManager.Users.SingleOrDefaultAsync(user => user.CellPhone == model.CellPhone).Result is not null)
-            return new Response<object>(MessageResource.Error_UserCellPhoneAlreadyExist);
+        existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.CellPhone == model.CellPhone);
+        if (existingUser is not null && !existingUser.IsSoftDeleted) return new Response<object>(MessageResource.Error_UserCellPhoneAlreadyExist);
 
-        if (_userManager.Users.SingleOrDefaultAsync(user => user.NationalId == model.NationalId).Result is not null)
-            return new Response<object>(MessageResource.Error_UserNationalIdAlreadyExist);
+        existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.NationalId == model.NationalId);
+        if (existingUser is not null && !existingUser.IsSoftDeleted) return new Response<object>(MessageResource.Error_UserNationalIdAlreadyExist);
         #endregion
 
         var newUser = new OnlineShopUser
@@ -318,16 +319,16 @@ public class UserService(RoleManager<OnlineShopRole> roleManager, UserManager<On
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
         var userToEdit = await _userManager.FindByIdAsync(model.Id);
-        if (userToEdit is null) return new Response<object>(MessageResource.Error_UserNotFound);
+        if (userToEdit is null || userToEdit.IsSoftDeleted) return new Response<object>(MessageResource.Error_UserNotFound);
 
-        var existingEmail = await _userManager.Users.SingleOrDefaultAsync(user => user.NormalizedEmail == model.Email.ToUpper());
-        if (existingEmail is not null && existingEmail.Id != model.Id) return new Response<object>(MessageResource.Error_UserEmailAlreadyExist);
+        var existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.NormalizedEmail == model.Email.ToUpper());
+        if (existingUser is not null && !existingUser.IsSoftDeleted && existingUser.Id != model.Id) return new Response<object>(MessageResource.Error_UserEmailAlreadyExist);
 
-        var existingCellPhone = await _userManager.Users.SingleOrDefaultAsync(user => user.CellPhone == model.CellPhone.ToUpper());
-        if (existingCellPhone is not null && existingCellPhone.Id != model.Id) return new Response<object>(MessageResource.Error_UserCellPhoneAlreadyExist);
+        existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.CellPhone == model.CellPhone.ToUpper());
+        if (existingUser is not null && !existingUser.IsSoftDeleted && existingUser.Id != model.Id) return new Response<object>(MessageResource.Error_UserCellPhoneAlreadyExist);
 
-        var existingNationalId = await _userManager.Users.SingleOrDefaultAsync(user => user.NationalId == model.NationalId);
-        if (existingNationalId is not null && existingNationalId.Id != model.Id) return new Response<object>(MessageResource.Error_UserNationalIdAlreadyExist);
+        existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.NationalId == model.NationalId);
+        if (existingUser is not null && !existingUser.IsSoftDeleted && existingUser.Id != model.Id) return new Response<object>(MessageResource.Error_UserNationalIdAlreadyExist);
         #endregion
 
         userToEdit.FirstName = model.FirstName;
@@ -352,19 +353,18 @@ public class UserService(RoleManager<OnlineShopRole> roleManager, UserManager<On
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
         var userToEdit = await _userManager.FindByIdAsync(model.Id);
-        if (userToEdit is null) return new Response<object>(MessageResource.Error_UserNotFound);
+        if (userToEdit is null || userToEdit.IsSoftDeleted) return new Response<object>(MessageResource.Error_UserNotFound);
         if (_userManager.IsInRoleAsync(userToEdit, DatabaseConstants.DefaultRoles.GodAdminName).Result)
             return new Response<object>(MessageResource.Error_NoPermissionToEditAdmins);
 
+        var existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.NormalizedEmail == model.Email.ToUpper());
+        if (existingUser is not null && !existingUser.IsSoftDeleted && existingUser.Id != model.Id) return new Response<object>(MessageResource.Error_UserEmailAlreadyExist);
 
-        var existingEmail = await _userManager.Users.SingleOrDefaultAsync(user => user.NormalizedEmail == model.Email.ToUpper());
-        if (existingEmail is not null && existingEmail.Id != model.Id) return new Response<object>(MessageResource.Error_UserEmailAlreadyExist);
+        existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.CellPhone == model.CellPhone.ToUpper());
+        if (existingUser is not null && !existingUser.IsSoftDeleted && existingUser.Id != model.Id) return new Response<object>(MessageResource.Error_UserCellPhoneAlreadyExist);
 
-        var existingCellPhone = await _userManager.Users.SingleOrDefaultAsync(user => user.CellPhone == model.CellPhone.ToUpper());
-        if (existingCellPhone is not null && existingCellPhone.Id != model.Id) return new Response<object>(MessageResource.Error_UserCellPhoneAlreadyExist);
-
-        var existingNationalId = await _userManager.Users.SingleOrDefaultAsync(user => user.NationalId == model.NationalId);
-        if (existingNationalId is not null && existingNationalId.Id != model.Id) return new Response<object>(MessageResource.Error_UserNationalIdAlreadyExist);
+        existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.NationalId == model.NationalId);
+        if (existingUser is not null && !existingUser.IsSoftDeleted && existingUser.Id != model.Id) return new Response<object>(MessageResource.Error_UserNationalIdAlreadyExist);
         #endregion
 
         userToEdit.FirstName = model.FirstName;
@@ -389,20 +389,20 @@ public class UserService(RoleManager<OnlineShopRole> roleManager, UserManager<On
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
         var userToEdit = await _userManager.FindByIdAsync(model.Id);
-        if (userToEdit is null) return new Response<object>(MessageResource.Error_UserNotFound);
+        if (userToEdit is null || userToEdit.IsSoftDeleted) return new Response<object>(MessageResource.Error_UserNotFound);
+        
         if (_userManager.IsInRoleAsync(userToEdit, DatabaseConstants.DefaultRoles.GodAdminName).Result ||
-                    _userManager.IsInRoleAsync(userToEdit, DatabaseConstants.DefaultRoles.AdminName).Result)
+            _userManager.IsInRoleAsync(userToEdit, DatabaseConstants.DefaultRoles.AdminName).Result)
             return new Response<object>(MessageResource.Error_NoPermissionToEditAdmins);
 
+        var existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.NormalizedEmail == model.Email.ToUpper());
+        if (existingUser is not null && !existingUser.IsSoftDeleted && existingUser.Id != model.Id) return new Response<object>(MessageResource.Error_UserEmailAlreadyExist);
 
-        var existingEmail = await _userManager.Users.SingleOrDefaultAsync(user => user.NormalizedEmail == model.Email.ToUpper());
-        if (existingEmail is not null && existingEmail.Id != model.Id) return new Response<object>(MessageResource.Error_UserEmailAlreadyExist);
+        existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.CellPhone == model.CellPhone.ToUpper());
+        if (existingUser is not null && !existingUser.IsSoftDeleted && existingUser.Id != model.Id) return new Response<object>(MessageResource.Error_UserCellPhoneAlreadyExist);
 
-        var existingCellPhone = await _userManager.Users.SingleOrDefaultAsync(user => user.CellPhone == model.CellPhone.ToUpper());
-        if (existingCellPhone is not null && existingCellPhone.Id != model.Id) return new Response<object>(MessageResource.Error_UserCellPhoneAlreadyExist);
-
-        var existingNationalId = await _userManager.Users.SingleOrDefaultAsync(user => user.NationalId == model.NationalId);
-        if (existingNationalId is not null && existingNationalId.Id != model.Id) return new Response<object>(MessageResource.Error_UserNationalIdAlreadyExist);
+        existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.NationalId == model.NationalId);
+        if (existingUser is not null && !existingUser.IsSoftDeleted && existingUser.Id != model.Id) return new Response<object>(MessageResource.Error_UserNationalIdAlreadyExist);
         #endregion
 
         userToEdit.FirstName = model.FirstName;
@@ -426,9 +426,9 @@ public class UserService(RoleManager<OnlineShopRole> roleManager, UserManager<On
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
         var userToChangePassword = await _userManager.FindByIdAsync(model.UserId);
-        if (userToChangePassword is null) return new Response<object>(MessageResource.Error_UserNotFound);
+        if (userToChangePassword is null || userToChangePassword.IsSoftDeleted) return new Response<object>(MessageResource.Error_UserNotFound);
 
-        var changePasswordResult = await _userManager.ChangePasswordAsync(userToChangePassword,model.CurrentPassword,model.NewPassword);
+        var changePasswordResult = await _userManager.ChangePasswordAsync(userToChangePassword, model.CurrentPassword, model.NewPassword);
         return changePasswordResult.Succeeded ? new Response<object>(model) : new Response<object>(string.Join(" ", changePasswordResult.Errors.Select(e => e.Description)));
     }
 
@@ -439,12 +439,12 @@ public class UserService(RoleManager<OnlineShopRole> roleManager, UserManager<On
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
         var userToDelete = await _userManager.FindByIdAsync(model.Id);
-        if (userToDelete is null) return new Response<object>(MessageResource.Error_UserNotFound);
+        if (userToDelete is null || userToDelete.IsSoftDeleted) return new Response<object>(MessageResource.Error_UserNotFound);
 
         if (_userManager.IsInRoleAsync(userToDelete, DatabaseConstants.DefaultRoles.GodAdminName).Result)
             return new Response<object>(MessageResource.Error_NoPermissionToEditAdmins);
 
-        if (_orderRepository.SelectRangeBySellerAsync(model.Id).Result.ResultModel!.Any()) return new Response<object>(MessageResource.Error_UserIsSellerWithOrder);
+        if (_orderRepository.SelectNonDeletedsBySellerAsync(model.Id).Result.ResultModel!.Any()) return new Response<object>(MessageResource.Error_UserIsSellerWithOrder);
         #endregion
 
         userToDelete.IsSoftDeleted = true;
@@ -461,13 +461,13 @@ public class UserService(RoleManager<OnlineShopRole> roleManager, UserManager<On
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
         var userToDelete = await _userManager.FindByIdAsync(model.Id);
-        if (userToDelete is null) return new Response<object>(MessageResource.Error_UserNotFound);
+        if (userToDelete is null || userToDelete.IsSoftDeleted) return new Response<object>(MessageResource.Error_UserNotFound);
 
         if (_userManager.IsInRoleAsync(userToDelete, DatabaseConstants.DefaultRoles.GodAdminName).Result ||
             _userManager.IsInRoleAsync(userToDelete, DatabaseConstants.DefaultRoles.AdminName).Result)
             return new Response<object>(MessageResource.Error_NoPermissionToEditAdmins);
 
-        if (_orderRepository.SelectRangeBySellerAsync(model.Id).Result.ResultModel!.Any()) return new Response<object>(MessageResource.Error_UserIsSellerWithOrder);
+        if (_orderRepository.SelectNonDeletedsBySellerAsync(model.Id).Result.ResultModel!.Any()) return new Response<object>(MessageResource.Error_UserIsSellerWithOrder);
         #endregion
 
         userToDelete.IsSoftDeleted = true;
@@ -484,7 +484,7 @@ public class UserService(RoleManager<OnlineShopRole> roleManager, UserManager<On
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
         var userToGrantOrRevoke = await _userManager.FindByIdAsync(model.Id);
-        if (userToGrantOrRevoke is null) return new Response<object>(MessageResource.Error_UserNotFound);
+        if (userToGrantOrRevoke is null || userToGrantOrRevoke.IsSoftDeleted) return new Response<object>(MessageResource.Error_UserNotFound);
 
         if (_userManager.IsInRoleAsync(userToGrantOrRevoke, DatabaseConstants.DefaultRoles.GodAdminName).Result)
             return new Response<object>(MessageResource.Error_UserIsGodAdmin);

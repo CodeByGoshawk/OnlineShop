@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using OnlineShop.Domain.Aggregates.SaleAggregates;
 using OnlineShop.Domain.Frameworks.Abstracts;
 
 namespace OnlineShop.Domain.Aggregates.UserManagementAggregates;

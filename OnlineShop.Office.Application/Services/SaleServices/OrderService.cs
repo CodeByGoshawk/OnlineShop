@@ -20,12 +20,13 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
     public async Task<IResponse<GetOrderResultAppDto>> Get(GetOrderAppDto model)
     {
         if (model is null) return new Response<GetOrderResultAppDto>(MessageResource.Error_NullInputModel);
-        var selectOrderResponse = await _orderRepository.SelectByIdAsync(model.Id);
+        var selectOrderResponse = await _orderRepository.SelectNonDeletedByIdAsync(model.Id);
         if (!selectOrderResponse.IsSuccessful) return new Response<GetOrderResultAppDto>(selectOrderResponse.ErrorMessage!);
 
         var resultDto = new GetOrderResultAppDto
         {
             Id = selectOrderResponse.ResultModel!.Id,
+            BuyerId = selectOrderResponse.ResultModel!.BuyerId,
             Code = selectOrderResponse.ResultModel.Code!,
             CreatedDateGregorian = selectOrderResponse.ResultModel.CreatedDateGregorian,
             CreatedDatePersian = selectOrderResponse.ResultModel.CreatedDatePersian!,
@@ -56,7 +57,7 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
 
     public async Task<IResponse<GetOrdersRangeResultAppDto>> GetRangeByBuyer(GetOrdersRangeByBuyerAppDto model)
     {
-        var selectOrdersResponse = await _orderRepository.SelectRangeByBuyerAsync(model.BuyerId);
+        var selectOrdersResponse = await _orderRepository.SelectNonDeletedsByBuyerAsync(model.BuyerId);
         if (!selectOrdersResponse.IsSuccessful) return new Response<GetOrdersRangeResultAppDto>(selectOrdersResponse.ErrorMessage!);
 
         var resultDto = new GetOrdersRangeResultAppDto();
@@ -66,6 +67,7 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
             var getResultDto = new GetOrderResultAppDto
             {
                 Id = order.Id,
+                BuyerId = order.BuyerId,
                 Code = order.Code!,
                 CreatedDateGregorian = order.CreatedDateGregorian,
                 CreatedDatePersian = order.CreatedDatePersian!,
@@ -92,7 +94,7 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
         var buyer = await _userManager.FindByIdAsync(model.BuyerId);
-        if (buyer is null) return new Response<object>(MessageResource.Error_BuyerNotFound);
+        if (buyer is null || buyer.IsSoftDeleted) return new Response<object>(MessageResource.Error_BuyerNotFound);
         if (!_userManager.IsInRoleAsync(buyer, DatabaseConstants.DefaultRoles.BuyerName).Result) return new Response<object>(MessageResource.Error_WrongBuyer);
 
         if (model.OrderDetailDtos.Count == 0) return new Response<object>(MessageResource.Error_EmptyOrderDetails);
@@ -145,7 +147,7 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
 
         if (model.OrderDetailDtos.Count == 0) return new Response<object>(MessageResource.Error_EmptyOrderDetails);
 
-        var selectOrderResponse = await _orderRepository.SelectByIdAsync(model.Id);
+        var selectOrderResponse = await _orderRepository.SelectNonDeletedByIdAsync(model.Id);
         if (!selectOrderResponse.IsSuccessful) return new Response<object>(MessageResource.Error_OrderNotFound);
 
         var updatedOrder = selectOrderResponse.ResultModel;
@@ -153,8 +155,6 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
         updatedOrder!.IsModified = true;
         updatedOrder!.ModifyDateGregorian = DateTime.Now;
         updatedOrder!.ModifyDatePersian = DateTime.Now.ConvertToPersian();
-
-        await _orderRepository.ClearOrderDetails(updatedOrder);
         updatedOrder!.OrderDetails.Clear();
 
         foreach (var orderDetailDto in model.OrderDetailDtos)
@@ -188,7 +188,7 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
     {
         if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
 
-        var selectOrderResponse = await _orderRepository.SelectByIdAsync(model.Id);
+        var selectOrderResponse = await _orderRepository.SelectNonDeletedByIdAsync(model.Id);
         if (!selectOrderResponse.IsSuccessful) return new Response<object>(selectOrderResponse.ErrorMessage!);
 
         var deletedOrder = selectOrderResponse.ResultModel;
@@ -201,5 +201,17 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
         if (updateOrderResponse.IsSuccessful) await _orderRepository.SaveAsync();
 
         return updateOrderResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(updateOrderResponse.ErrorMessage!);
+    }
+
+    public async Task<IResponse<GetOrderResultAppDto>> Authorize(Guid id)
+    {
+        var selectOrderResponse = await _orderRepository.SelectByIdAsync(id);
+        if (!selectOrderResponse.IsSuccessful) return new Response<GetOrderResultAppDto>(selectOrderResponse.ErrorMessage!);
+
+        var result = new GetOrderResultAppDto
+        {
+            BuyerId = selectOrderResponse.ResultModel!.BuyerId,
+        };
+        return new Response<GetOrderResultAppDto>(result);
     }
 }

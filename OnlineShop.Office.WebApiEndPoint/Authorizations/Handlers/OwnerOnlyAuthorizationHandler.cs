@@ -1,23 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using OnlineShop.Backoffice.WebApiEndPoint.Authorizations.Requirements;
 using PublicTools.Attributes;
-using PublicTools.Constants;
 using System.Security.Claims;
 
 namespace OnlineShop.Backoffice.WebApiEndPoint.Authorizations.Handlers;
 
-public class AdminsOrOwnerOnlyAuthorizationHandler : AuthorizationHandler<AdminsOrOwnerOnlyRequirement, object>
+public class OwnerOnlyAuthorizationHandler : AuthorizationHandler<OwnerOnlyRequirement, object>
 {
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, AdminsOrOwnerOnlyRequirement requirement, object resource)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OwnerOnlyRequirement requirement, object resource)
     {
-        var requesterUserRoles = context.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
-        if (requesterUserRoles.Contains(DatabaseConstants.DefaultRoles.GodAdminName) ||
-           requesterUserRoles.Contains(DatabaseConstants.DefaultRoles.AdminName))
-        {
-            context.Succeed(requirement);
-            return;
-        }
-
         var requesterUserId = context.User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Sid)!.Value;
         var resourceOwnerIdProperty = resource.GetType().GetProperties().SingleOrDefault(p => p.IsDefined(typeof(OwnerIdAttribute), false));
 

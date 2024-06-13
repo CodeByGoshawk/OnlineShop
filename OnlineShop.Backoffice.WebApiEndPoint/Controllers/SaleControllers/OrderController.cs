@@ -4,12 +4,11 @@ using OnlineShop.Backoffice.Application.Contracts.Sale;
 using OnlineShop.Backoffice.Application.Dtos.SaleDtos.OrderDtos;
 using PublicTools.Constants;
 using PublicTools.Resources;
-using System.Security.Claims;
 
 namespace OnlineShop.Backoffice.WebApiEndPoint.Controllers.SaleControllers;
 [ApiController]
 [Route("api/Order")]
-public class OrderController(IOrderService orderService,IAuthorizationService authorizationService) : Controller
+public class OrderController(IOrderService orderService, IAuthorizationService authorizationService) : Controller
 {
     private readonly IOrderService _orderService = orderService;
     private readonly IAuthorizationService _authorizationService = authorizationService;
