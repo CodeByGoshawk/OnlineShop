@@ -6,7 +6,7 @@ public interface IOrderService
 {
     Task<IResponse<GetOrderResultAppDto>> Get(GetOrderAppDto model);
     Task<IResponse<GetOrdersRangeResultAppDto>> GetRangeByBuyer(GetOrdersRangeByBuyerAppDto model);
-    Task<IResponse<object>> Post(PostOrderAppDto model);
-    Task<IResponse<object>> Put(PutOrderAppDto model);
-    Task<IResponse<object>> Delete(DeleteOrderAppDto model);
+    Task<IResponse> Post(PostOrderAppDto model);
+    Task<IResponse> Put(PutOrderAppDto model);
+    Task<IResponse> Delete(DeleteOrderAppDto model);
 }

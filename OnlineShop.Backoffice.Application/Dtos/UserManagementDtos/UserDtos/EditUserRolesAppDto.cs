@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace OnlineShop.Backoffice.Application.Dtos.UserManagementDtos.UserDtos;
-public class EditOnlineShopUserRolesAppDto
+public class EditUserRolesAppDto
 {
-    [Required(ErrorMessage = "Id Is Required")]
+    [Required]
     public string Id { get; set; }
 
-    [Required(ErrorMessage = "Roles Is Required")]
+    [Required]
     public List<string> Roles { get; set; }
 }

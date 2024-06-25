@@ -1,6 +1,9 @@
-﻿namespace OnlineShop.Office.Application.Dtos.UserManagementDtos.UserDtos;
-public class GetOnlineShopUserResultAppDto
+﻿using PublicTools.Attributes;
+
+namespace OnlineShop.Backoffice.Application.Dtos.UserManagementDtos.UserDtos;
+public class GetUserWithPrivateDataResultAppDto
 {
+    [RequesterId]
     public string? Id { get; set; }
     public string? UserName { get; set; }
 
@@ -22,10 +25,21 @@ public class GetOnlineShopUserResultAppDto
     public string? Picture { get; set; }
     public string? Location { get; set; }
 
+    public int AccessFailedCount { get; set; }
     public bool TwoFactorEnabled { get; set; }
 
     public DateTime CreatedDateGregorian { get; set; }
     public string? CreatedDatePersian { get; set; }
 
+    public bool IsModified { get; set; }
+    public DateTime? ModifyDateGregorian { get; set; }
+    public string? ModifyDatePersian { get; set; }
+
+    public bool IsSoftDeleted { get; set; }
+    public DateTime? SoftDeleteDateGregorian { get; set; }
+    public string? SoftDeleteDatePersian { get; set; }
+
     public bool IsActive { get; set; }
+
+    public ICollection<string>? UserRoles { get; set; }
 }

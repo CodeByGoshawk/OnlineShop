@@ -1,5 +1,5 @@
 ﻿namespace OnlineShop.Backoffice.Application.Dtos.UserManagementDtos.UserDtos;
-public class GrantOrRevokeAdminRoleAppDto
+public class GrantOrRevokeRoleAppDto
 {
     public string Id { get; set; }
 }

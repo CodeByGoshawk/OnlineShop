@@ -17,10 +17,10 @@ public class BaseRepository<TDbContext, TEntity, TPrimaryKey>(TDbContext dbConte
     protected readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
 
     // Create
-    public virtual async Task<IResponse<object>> InsertAsync(TEntity entity)
+    public virtual async Task<IResponse> InsertAsync(TEntity entity)
     {
         await _dbSet.AddAsync(entity);
-        return new Response<object>(entity);
+        return new Response(entity);
     }
 
     // Read
@@ -37,30 +37,32 @@ public class BaseRepository<TDbContext, TEntity, TPrimaryKey>(TDbContext dbConte
     }
 
     // Update
-    public virtual async Task<IResponse<object>> UpdateAsync(TEntity entity)
+    public virtual async Task<IResponse> UpdateAsync(TEntity entity)
     {
+        await Task.Yield();
         _dbSet.Attach(entity);
         _dbContext.Entry(entity).State = EntityState.Modified;
-        return new Response<object>(entity);
+        return new Response(entity);
     }
 
     // Delete
-    public virtual async Task<IResponse<object>> DeleteAsync(TPrimaryKey id)
+    public virtual async Task<IResponse> DeleteAsync(TPrimaryKey id)
     {
-        if (id is null) return new Response<object>(MessageResource.Error_NullInputId);
+        if (id is null) return new Response(MessageResource.Error_NullInputId);
         var entityToDelete = await _dbSet.FindAsync(id);
-        if (entityToDelete is null) return new Response<object>(MessageResource.Error_FindEntityFailed);
+        if (entityToDelete is null) return new Response(MessageResource.Error_FindEntityFailed);
         _dbSet.Remove(entityToDelete);
-        return new Response<object>(entityToDelete);
+        return new Response(entityToDelete);
     }
-    public virtual async Task<IResponse<object>> DeleteAsync(TEntity entity)
+    public virtual async Task<IResponse> DeleteAsync(TEntity entity)
     {
+        await Task.Yield();
         if (_dbSet.Entry(entity).State == EntityState.Detached)
         {
             _dbSet.Attach(entity);
         }
         _dbSet.Remove(entity);
-        return new Response<object>(entity);
+        return new Response(entity);
     }
 
     // Save

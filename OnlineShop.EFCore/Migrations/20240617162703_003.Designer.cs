@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineShop.EFCore;
 
@@ -11,9 +12,11 @@ using OnlineShop.EFCore;
 namespace OnlineShop.EFCore.Migrations
 {
     [DbContext(typeof(OnlineShopDbContext))]
-    partial class OnlineShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240617162703_003")]
+    partial class _003
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -348,7 +351,7 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.Property<string>("CellPhone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -421,7 +424,7 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.Property<string>("NationalId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NormalizedEmail")
                         .IsRequired()
@@ -479,6 +482,18 @@ namespace OnlineShop.EFCore.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
+                    b.HasIndex("CellPhone", "IsSoftDeleted")
+                        .IsUnique();
+
+                    b.HasIndex("Email", "IsSoftDeleted")
+                        .IsUnique();
+
+                    b.HasIndex("NationalId", "IsSoftDeleted")
+                        .IsUnique();
+
+                    b.HasIndex("NormalizedEmail", "IsSoftDeleted")
+                        .IsUnique();
+
                     b.ToTable("AspNetUsers", "UserManagement");
 
                     b.HasData(
@@ -487,13 +502,13 @@ namespace OnlineShop.EFCore.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CellPhone = "09120000000",
-                            ConcurrencyStamp = "14863898-67e8-4ea8-935e-137fdd7837a0",
-                            CreatedDateGregorian = new DateTime(2024, 6, 25, 17, 36, 58, 263, DateTimeKind.Local).AddTicks(2202),
-                            CreatedDatePersian = "1403/4/5 17:36:58.2632226",
+                            ConcurrencyStamp = "245f40e3-7bc0-426e-b1cd-1f820374e375",
+                            CreatedDateGregorian = new DateTime(2024, 6, 17, 19, 57, 1, 23, DateTimeKind.Local).AddTicks(7312),
+                            CreatedDatePersian = "1403/3/28 19:57:01.0237333",
                             Email = "Shahbazi.amh@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Amir",
-                            IsActive = true,
+                            IsActive = false,
                             IsCellPhoneConfirmed = true,
                             IsModified = false,
                             IsNationalIdConfirmed = true,
@@ -503,9 +518,9 @@ namespace OnlineShop.EFCore.Migrations
                             NationalId = "0440000000",
                             NormalizedEmail = "SHAHBAZI.AMH@GMAIL.COM",
                             NormalizedUserName = "A.SHAHBAZI",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKuz9LL2KlxKDU4a0pZr9TE4kz6tvW2JXKOS8vPBxWAt6ybqN5tYqT/yADBaqxhmbQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBeAA7ZO+wXZ7ra+sS4NH6KLp6OrzYvqKcGIwwEo8IsOwiTr7CBKeqrdAOAtDC7/Qw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ee8dc3b7-2edf-4fe2-85a0-27bd33485a03",
+                            SecurityStamp = "38571247-c663-4b4c-ad35-36fe4799060c",
                             TwoFactorEnabled = false,
                             UserName = "a.Shahbazi"
                         });

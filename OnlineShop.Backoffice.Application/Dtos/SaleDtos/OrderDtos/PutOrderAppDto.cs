@@ -3,10 +3,10 @@
 namespace OnlineShop.Backoffice.Application.Dtos.SaleDtos.OrderDtos;
 public class PutOrderAppDto
 {
-    [Required(ErrorMessage = "Id is required")]
+    [Required]
     public Guid Id { get; set; }
 
-    [Required(ErrorMessage = "OrderDetailDtos are required")]
+    [Required]
     public List<OrderDetailAppDto> OrderDetailDtos { get; set; }
 
 }

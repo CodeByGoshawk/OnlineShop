@@ -61,6 +61,15 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ادمین ها نمی توانند فروشنده باشند.
+        /// </summary>
+        public static string Error_AdminsCanNotBeSellers {
+            get {
+                return ResourceManager.GetString("Error_AdminsCanNotBeSellers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to نام کاربری یا رمز عبور اشتباه است.
         /// </summary>
         public static string Error_AuthenticationFailed {
@@ -304,7 +313,7 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to امکان انجام عملیات فقط با آی دی احراز هویت شده امکان پذیر است.
+        ///   Looks up a localized string similar to امکان انجام این عملیات محدود به داده های مربوط به کاربر احراز هویت شده می باشد.
         /// </summary>
         public static string Error_UnauthorizedOwner {
             get {

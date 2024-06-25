@@ -24,9 +24,11 @@ public class ProductService
             var getResultDto = new GetProductResultAppDto
             {
                 Id = product.Id,
+                ProductCategoryId = product.ProductCategoryId,
                 Code = product.Code!,
                 Title = product.Title!,
-                UnitPrice = product.UnitPrice
+                UnitPrice = product.UnitPrice,
+                Picture = product.Picture
             };
             result.GetResultDtos.Add(getResultDto);
         });
@@ -43,9 +45,11 @@ public class ProductService
         var result = new GetProductResultAppDto
         {
             Id = selectProductResponse.ResultModel!.Id,
+            ProductCategoryId = selectProductResponse.ResultModel.ProductCategoryId,
             Code = selectProductResponse.ResultModel.Code!,
             Title = selectProductResponse.ResultModel.Title!,
-            UnitPrice = selectProductResponse.ResultModel.UnitPrice
+            UnitPrice = selectProductResponse.ResultModel.UnitPrice,
+            Picture = selectProductResponse.ResultModel.Picture
         };
         return new Response<GetProductResultAppDto>(result);
     }

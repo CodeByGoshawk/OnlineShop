@@ -25,7 +25,8 @@ public class ProductService
     {
         if (model is null) return new Response<GetProductResultAppDto>(MessageResource.Error_NullInputModel);
         var selectProductResponse = await _productRepository.SelectNonDeletedByIdAsync(model.Id);
-        if (!selectProductResponse.IsSuccessful) return new Response<GetProductResultAppDto>(selectProductResponse.ErrorMessage!);
+        if (!selectProductResponse.IsSuccessful || selectProductResponse.ResultModel!.SellerId != model.SellerId)
+            return new Response<GetProductResultAppDto>(MessageResource.Error_UnauthorizedOwner);
 
         var result = new GetProductResultAppDto
         {
@@ -34,6 +35,7 @@ public class ProductService
             ProductCategoryId = selectProductResponse.ResultModel.ProductCategoryId,
             Code = selectProductResponse.ResultModel.Code!,
             Title = selectProductResponse.ResultModel.Title!,
+            Picture = selectProductResponse.ResultModel.Picture,
             UnitPrice = selectProductResponse.ResultModel.UnitPrice,
             CreatedDateGregorian = selectProductResponse.ResultModel.CreatedDateGregorian,
             CreatedDatePersian = selectProductResponse.ResultModel.CreatedDatePersian!,
@@ -55,6 +57,7 @@ public class ProductService
             ProductCategoryId = selectProductResponse.ResultModel.ProductCategoryId,
             Code = selectProductResponse.ResultModel.Code!,
             Title = selectProductResponse.ResultModel.Title!,
+            Picture = selectProductResponse.ResultModel.Picture,
             UnitPrice = selectProductResponse.ResultModel.UnitPrice,
             CreatedDateGregorian = selectProductResponse.ResultModel.CreatedDateGregorian,
             CreatedDatePersian = selectProductResponse.ResultModel.CreatedDatePersian!,
@@ -86,6 +89,7 @@ public class ProductService
                 Code = product.Code!,
                 Title = product.Title!,
                 UnitPrice = product.UnitPrice,
+                Picture = product.Picture,
                 CreatedDateGregorian = product.CreatedDateGregorian,
                 CreatedDatePersian = product.CreatedDatePersian!,
                 IsModified = product.IsModified,
@@ -118,6 +122,7 @@ public class ProductService
                 ProductCategoryId = product.ProductCategoryId,
                 Code = product.Code!,
                 Title = product.Title!,
+                Picture = product.Picture,
                 UnitPrice = product.UnitPrice,
                 CreatedDateGregorian = product.CreatedDateGregorian,
                 CreatedDatePersian = product.CreatedDatePersian!,
@@ -129,15 +134,15 @@ public class ProductService
         return new Response<GetProductsRangeResultAppDto>(result);
     }
 
-    public async Task<IResponse<object>> Post(PostProductAppDto model)
+    public async Task<IResponse> Post(PostProductAppDto model)
     {
-        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
-        if (model.UnitPrice <= 0) return new Response<object>(MessageResource.Error_ZeroOrLessUnitPrice);
-        if (!_productCategoryRepository.SelectByIdAsync(model.ProductCategoryId).Result.IsSuccessful) return new Response<object>(MessageResource.Error_CategoryNotFound);
+        if (model is null) return new Response(MessageResource.Error_NullInputModel);
+        if (model.UnitPrice <= 0) return new Response(MessageResource.Error_ZeroOrLessUnitPrice);
+        if (!(await _productCategoryRepository.SelectByIdAsync(model.ProductCategoryId)).IsSuccessful) return new Response(MessageResource.Error_CategoryNotFound);
 
-        var productSeller = await _userManager.FindByIdAsync(model.SellerId);
-        if (productSeller is null || productSeller.IsSoftDeleted) return new Response<object>(MessageResource.Error_SellerNotFound);
-        if (!_userManager.IsInRoleAsync(productSeller, DatabaseConstants.DefaultRoles.SellerName).Result) return new Response<object>(MessageResource.Error_WrongSeller);
+        var productSeller = await _userManager.FindByIdAsync(model.SellerId!);
+        if (productSeller is null || productSeller.IsSoftDeleted) return new Response(MessageResource.Error_SellerNotFound);
+        if (!await _userManager.IsInRoleAsync(productSeller, DatabaseConstants.DefaultRoles.SellerName)) return new Response(MessageResource.Error_WrongSeller);
 
         string productCode;
         while (true)
@@ -153,6 +158,7 @@ public class ProductService
             Code = productCode,
             Title = model.Title,
             UnitPrice = model.UnitPrice,
+            Picture = model.Picture,
             ProductCategoryId = model.ProductCategoryId,
             CreatedDateGregorian = DateTime.Now,
             CreatedDatePersian = DateTime.Now.ConvertToPersian()
@@ -162,21 +168,24 @@ public class ProductService
 
         if (insertProductResponse.IsSuccessful) await _productRepository.SaveAsync();
 
-        return insertProductResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(insertProductResponse.ErrorMessage!);
+        return insertProductResponse.IsSuccessful ? new Response(model) : new Response(insertProductResponse.ErrorMessage!);
     }
 
-    public async Task<IResponse<object>> Put(PutProductAppDto model)
+    public async Task<IResponse> Put(PutProductAppDto model)
     {
-        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
-        if (model.UnitPrice <= 0) return new Response<object>(MessageResource.Error_ZeroOrLessUnitPrice);
-        if (!_productCategoryRepository.SelectByIdAsync(model.ProductCategoryId).Result.IsSuccessful) return new Response<object>(MessageResource.Error_CategoryNotFound);
-
+        #region[Guards]
+        if (model is null) return new Response(MessageResource.Error_NullInputModel);
+        if (model.UnitPrice <= 0) return new Response(MessageResource.Error_ZeroOrLessUnitPrice);
+        if (!(await _productCategoryRepository.SelectByIdAsync(model.ProductCategoryId)).IsSuccessful) return new Response(MessageResource.Error_CategoryNotFound);
         var selectProductResponse = await _productRepository.SelectNonDeletedByIdAsync(model.Id);
-        if (!selectProductResponse.IsSuccessful) return new Response<object>(selectProductResponse.ErrorMessage!);
+        if (!selectProductResponse.IsSuccessful || selectProductResponse.ResultModel!.SellerId != model.SellerId)
+            return new Response(selectProductResponse.ErrorMessage!);
+        #endregion
 
         var updatedProduct = selectProductResponse.ResultModel;
         updatedProduct!.Title = model.Title;
         updatedProduct.UnitPrice = model.UnitPrice;
+        updatedProduct.Picture = model.Picture;
         updatedProduct.ProductCategoryId = model.ProductCategoryId;
         updatedProduct.IsModified = true;
         updatedProduct.ModifyDateGregorian = DateTime.Now;
@@ -186,15 +195,19 @@ public class ProductService
 
         if (updateProductResponse.IsSuccessful) await _productRepository.SaveAsync();
 
-        return updateProductResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(updateProductResponse.ErrorMessage!);
+        return updateProductResponse.IsSuccessful ? new Response(model) : new Response(updateProductResponse.ErrorMessage!);
     }
 
-    public async Task<IResponse<object>> Delete(DeleteProductAppDto model)
+    public async Task<IResponse> Delete(DeleteProductAppDto model)
     {
-        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
-
+        #region[Guards]
+        if (model is null) return new Response(MessageResource.Error_NullInputModel);
         var selectProductResponse = await _productRepository.SelectNonDeletedByIdAsync(model.Id);
-        if (!selectProductResponse.IsSuccessful) return new Response<object>(selectProductResponse.ErrorMessage!);
+        if (!selectProductResponse.IsSuccessful && (await IsAnyTypeOfAdminsAsync(model.DeleterUserId!)).IsSuccessful)
+            return new Response(selectProductResponse.ErrorMessage!);
+        else if (!selectProductResponse.IsSuccessful || selectProductResponse.ResultModel!.SellerId != model.DeleterUserId)
+            return new Response(MessageResource.Error_UnauthorizedOwner);
+        #endregion
 
         var deletedProduct = selectProductResponse.ResultModel;
         deletedProduct!.IsSoftDeleted = true;
@@ -205,18 +218,23 @@ public class ProductService
 
         if (updateOperationResponse.IsSuccessful) await _productRepository.SaveAsync();
 
-        return updateOperationResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(updateOperationResponse.ErrorMessage!);
+        return updateOperationResponse.IsSuccessful ? new Response(model) : new Response(updateOperationResponse.ErrorMessage!);
     }
 
-    public async Task<IResponse<GetProductResultAppDto>> Authorize(Guid id)
-    {
-        var selectProductResponse = await _productRepository.SelectByIdAsync(id);
-        if (!selectProductResponse.IsSuccessful) return new Response<GetProductResultAppDto>(selectProductResponse.ErrorMessage!);
 
-        var result = new GetProductResultAppDto
-        {
-            SellerId = selectProductResponse.ResultModel!.SellerId,
-        };
-        return new Response<GetProductResultAppDto>(result);
+    //--------------------------------------------[Private Methods]--------------------------------------------//
+
+    private async Task<IResponse> IsAnyTypeOfAdminsAsync(string userId)
+    {
+        List<string> adminRoles =
+        [
+            DatabaseConstants.DefaultRoles.GodAdminName,
+            DatabaseConstants.DefaultRoles.AdminName
+        ];
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null) return new Response(MessageResource.Error_UserNotFound);
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+        return new Response(userRoles.Any(role => adminRoles.Contains(role)));
     }
 }

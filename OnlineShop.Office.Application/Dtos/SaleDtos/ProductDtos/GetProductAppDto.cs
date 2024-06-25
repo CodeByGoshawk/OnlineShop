@@ -3,6 +3,6 @@
 namespace OnlineShop.Office.Application.Dtos.SaleDtos.ProductDtos;
 public class GetProductAppDto
 {
-    [Required(ErrorMessage = "Id is required")]
+    [Required]
     public Guid Id { get; set; }
 }

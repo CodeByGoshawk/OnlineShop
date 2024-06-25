@@ -7,7 +7,7 @@ public interface IRoleService
 {
     Task<IResponse<GetOnlineShopRoleResultAppDto>> Get(GetOnlineShopRoleAppDto model);
     Task<IResponse<GetAllOnlineShopRolesResultAppDto>> GetAll();
-    Task<IResponse<object>> Register(RegisterOnlineShopRoleAppDto model);
-    Task<IResponse<object>> Edit(EditOnlineShopRoleAppDto model);
-    Task<IResponse<object>> Delete(DeleteOnlineShopUserAppDto model);
+    Task<IResponse> Register(RegisterOnlineShopRoleAppDto model);
+    Task<IResponse> Edit(EditOnlineShopRoleAppDto model);
+    Task<IResponse> Delete(DeleteUserAppDto model);
 }

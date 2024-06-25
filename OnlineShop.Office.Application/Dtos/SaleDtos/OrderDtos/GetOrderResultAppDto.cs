@@ -5,11 +5,11 @@ namespace OnlineShop.Office.Application.Dtos.SaleDtos.OrderDtos;
 public class GetOrderResultAppDto
 {
     public Guid Id { get; set; }
-    [OwnerId]
+    [RequesterId]
     public string BuyerId { get; set; }
     public string Code { get; set; }
     public GetOnlineShopUserResultAppDto? Buyer { get; set; }
-    public List<OrderDetailAppDto> OrderDetailDtos { get; set; } = [];
+    public List<OrderDetailAppDto> OrderDetails { get; set; } = [];
 
     public DateTime CreatedDateGregorian { get; set; }
     public string CreatedDatePersian { get; set; }

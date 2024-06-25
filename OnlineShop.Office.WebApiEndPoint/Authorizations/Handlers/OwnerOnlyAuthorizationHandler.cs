@@ -10,15 +10,18 @@ public class OwnerOnlyAuthorizationHandler : AuthorizationHandler<OwnerOnlyRequi
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OwnerOnlyRequirement requirement, object resource)
     {
         var requesterUserId = context.User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Sid)!.Value;
-        var resourceOwnerIdProperty = resource.GetType().GetProperties().SingleOrDefault(p => p.IsDefined(typeof(OwnerIdAttribute), false));
+        var resourceOwnerIdProperty = resource.GetType().GetProperties().SingleOrDefault(p => p.IsDefined(typeof(RequesterIdAttribute), false));
 
-        if (resourceOwnerIdProperty is not null && requesterUserId == resourceOwnerIdProperty!.GetValue(resource)!.ToString()) context.Succeed(requirement);
-        else
+        if (resourceOwnerIdProperty is null)
         {
             var method = resource.GetType().GetMethod("GetOwnerId");
             var result = await (Task<List<string>>)method!.Invoke(resource, null)!;
 
             if (result is null || result.Contains(requesterUserId)) context.Succeed(requirement);
+        }
+        else if (resourceOwnerIdProperty is not null && requesterUserId == resourceOwnerIdProperty!.GetValue(resource)!.ToString())
+        {
+            context.Succeed(requirement);
         }
 
         return;

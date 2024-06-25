@@ -4,10 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace OnlineShop.Office.Application.Dtos.SaleDtos.OrderDtos;
 public class PostOrderAppDto
 {
-    [OwnerId]
-    [Required(ErrorMessage = "Buyer Id is required")]
-    public string BuyerId { get; set; }
+    [RequesterId]
+    public string? BuyerId { get; set; }
 
-    [Required(ErrorMessage = "OrderDetailDtos are required")]
+    [Required]
     public List<OrderDetailAppDto> OrderDetailDtos { get; set; }
 }

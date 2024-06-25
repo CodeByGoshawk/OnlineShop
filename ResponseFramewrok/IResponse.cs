@@ -10,3 +10,7 @@ public interface IResponse<TResult>
     TResult? ResultModel { get; set; }
     HttpStatusCode HttpStatusCode { get; set; }
 }
+
+public interface IResponse : IResponse<object>
+{
+}

@@ -34,7 +34,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters()
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateLifetime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]!)),
@@ -57,7 +57,7 @@ builder.Services.AddAuthorizationBuilder()
     .AddPolicy(PolicyConstants.AdminsOrOwnerOnly, policy =>
         policy.Requirements.Add(new AdminsOrOwnerOnlyRequirement()))
     .AddPolicy(PolicyConstants.AdminsOnly, policy =>
-        policy.RequireRole($"{DatabaseConstants.DefaultRoles.GodAdminName},{DatabaseConstants.DefaultRoles.AdminName}"));
+        policy.RequireRole(DatabaseConstants.DefaultRoles.GodAdminName,DatabaseConstants.DefaultRoles.AdminName));
 
 builder.Services.AddSingleton<IAuthorizationHandler, OwnerOnlyAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationHandler, AdminsOrOwnerOnlyAuthorizationHandler>();
@@ -92,7 +92,7 @@ app.UseRouting();
 
 app.UseHttpsRedirection();
 
-//app.UseAuthentication();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

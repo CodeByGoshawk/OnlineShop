@@ -14,7 +14,7 @@ public class ProductController(IProductService productService) : Controller
     public async Task<IActionResult> GetAll()
     {
         var getAllOperationResponse = await _productService.GetAll();
-        return getAllOperationResponse.IsSuccessful ? Ok(getAllOperationResponse.ResultModel.GetResultDtos) : Problem(getAllOperationResponse.ErrorMessage, statusCode: 406);
+        return getAllOperationResponse.IsSuccessful ? Ok(getAllOperationResponse.ResultModel.GetResultDtos) : Problem(getAllOperationResponse.ErrorMessage, statusCode: (int)getAllOperationResponse.HttpStatusCode);
     }
 
     [HttpGet("Get")]

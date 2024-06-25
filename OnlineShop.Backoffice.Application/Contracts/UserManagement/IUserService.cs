@@ -4,20 +4,18 @@ using ResponseFramewrok;
 namespace OnlineShop.Backoffice.Application.Contracts.UserManagement;
 public interface IUserService
 {
-    Task<IResponse<GetOnlineShopUserResultAppDto>> Get(GetOnlineShopUserAppDto model);
-    Task<IResponse<GetOnlineShopUserResultAppDto>> GetNonAdminWithPrivateData(GetOnlineShopUserAppDto model);
-    Task<IResponse<GetOnlineShopUserResultAppDto>> GetWithPrivateData(GetOnlineShopUserAppDto model);
-    Task<IResponse<GetAllOnlineShopUsersResultAppDto>> GetNonAdminsWithPrivateData();
-    Task<IResponse<GetAllOnlineShopUsersResultAppDto>> GetAllWithPrivateData();
+    Task<IResponse<GetAllUsersWithPrivateDataResultAppDto>> GetAllWithPrivateData(GetAllUsersAppDto model);
+
+    Task<IResponse<GetUserResultAppDto>> Get(GetUserAppDto model);
+    Task<IResponse<GetUserWithPrivateDataResultAppDto>> GetWithPrivateData(GetUserAppDto model);
+
+    Task<IResponse> Register(RegisterUserAppDto model);
+    Task<IResponse> Edit(EditUserAppDto model);
+    Task<IResponse> ChangePassword(ChangePasswordAppDto model);
+    Task<IResponse> GrantOrRevokeAdminRole(GrantOrRevokeRoleAppDto model);
+    Task<IResponse> GrantOrRevokeSellerRole(GrantOrRevokeRoleAppDto model);
+
+    Task<IResponse> Delete(DeleteUserAppDto model);
 
     //Task<IResponse<GetAllOnlineShopUsersResultAppDto>> GetSellers();
-
-    Task<IResponse<object>> Register(RegisterOnlineShopUserAppDto model);
-    Task<IResponse<object>> EditSelf(EditOnlineShopUserPropertiesAppDto model);
-    Task<IResponse<object>> EditNonGodAdmin(EditOnlineShopUserPropertiesAppDto model);
-    Task<IResponse<object>> EditNonAdmin(EditOnlineShopUserPropertiesAppDto model);
-    Task<IResponse<object>> ChangePassword(ChangePasswordAppDto model);
-    Task<IResponse<object>> DeleteNonGodAdmin(DeleteOnlineShopUserAppDto model);
-    Task<IResponse<object>> DeleteNonAdmin(DeleteOnlineShopUserAppDto model);
-    Task<IResponse<object>> GrantOrRevokeAdminRole(GrantOrRevokeAdminRoleAppDto model);
 }

@@ -3,6 +3,6 @@
 namespace OnlineShop.Office.Application.Dtos.UserManagementDtos.UserDtos;
 public class DeleteOnlineShopUserAppDto
 {
-    [OwnerId]
+    [RequesterId]
     public string Id { get; set; }
 }

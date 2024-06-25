@@ -8,7 +8,7 @@ public interface IProductService
     Task<IResponse<GetProductsRangeResultAppDto>> GetRangeBySeller(GetProductsRangeBySellerAppDto model);
     Task<IResponse<GetProductResultAppDto>> Get(GetProductAppDto model);
     Task<IResponse<GetProductResultAppDto>> GetWithPrivateData(GetProductAppDto model);
-    Task<IResponse<object>> Post(PostProductAppDto model);
-    Task<IResponse<object>> Put(PutProductAppDto model);
-    Task<IResponse<object>> Delete(DeleteProductAppDto model);
+    Task<IResponse> Post(PostProductAppDto model);
+    Task<IResponse> Put(PutProductAppDto model);
+    Task<IResponse> Delete(DeleteProductAppDto model);
 }

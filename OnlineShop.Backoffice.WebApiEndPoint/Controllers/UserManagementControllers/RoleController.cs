@@ -45,7 +45,7 @@ public class RoleController(IRoleService roleService) : Controller
     }
 
     [HttpDelete("Delete")]
-    public async Task<IActionResult> Delete([FromBody] DeleteOnlineShopUserAppDto model)
+    public async Task<IActionResult> Delete([FromBody] DeleteUserAppDto model)
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
         var deleteOperationResponse = await _roleService.Delete(model);

@@ -13,6 +13,7 @@ public class Product : MainEntityBase, ITitledEntity
     // Properties
     public string? Title { get; set; }
     public decimal UnitPrice { get; set; }
+    public string? Picture { get; set; }
 
     // Navigations
     public ProductCategory? ProductCategory { get; set; }

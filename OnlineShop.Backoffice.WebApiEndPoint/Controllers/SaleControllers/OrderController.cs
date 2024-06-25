@@ -2,16 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Backoffice.Application.Contracts.Sale;
 using OnlineShop.Backoffice.Application.Dtos.SaleDtos.OrderDtos;
+using PublicTools.Attributes;
 using PublicTools.Constants;
 using PublicTools.Resources;
+using System.Security.Claims;
 
 namespace OnlineShop.Backoffice.WebApiEndPoint.Controllers.SaleControllers;
 [ApiController]
 [Route("api/Order")]
-public class OrderController(IOrderService orderService, IAuthorizationService authorizationService) : Controller
+public class OrderController(IOrderService orderService) : Controller
 {
     private readonly IOrderService _orderService = orderService;
-    private readonly IAuthorizationService _authorizationService = authorizationService;
 
     [Authorize(Policy = PolicyConstants.AdminsOnly)]
     [HttpGet("GetAllWithPrivateData")]
@@ -22,13 +23,11 @@ public class OrderController(IOrderService orderService, IAuthorizationService a
     }
 
     [Authorize(Roles = "Seller")]
-    [HttpGet("GetBySeller")]
-    public async Task<IActionResult> GetRangeBySeller([FromBody] GetOrdersRangeBySellerAppDto model)
+    [HttpGet("GetSelfOrders")]
+    public async Task<IActionResult> GetRangeBySeller()
     {
-        if (model is null) return Json(MessageResource.Error_NullInputModel);
-
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, model, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        var model = new GetOrdersRangeBySellerAppDto();
+        SetModelRequesterId(model);
 
         var getOperationResponse = await _orderService.GetRangeBySeller(model);
         return getOperationResponse.IsSuccessful ? Ok(getOperationResponse.ResultModel) : Problem(getOperationResponse.ErrorMessage, statusCode: (int)getOperationResponse.HttpStatusCode);
@@ -45,12 +44,11 @@ public class OrderController(IOrderService orderService, IAuthorizationService a
 
     [Authorize(Roles = "Seller")]
     [HttpGet("Get")]
-    public async Task<IActionResult> Get([FromBody] GetOrderAppDto model)
+    public async Task<IActionResult> GetWithSellerOrderDetails([FromBody] GetOrderAppDto model)
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, model, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        SetModelRequesterId(model);
 
         var getOperationResponse = await _orderService.GetWithSellerOrderDetails(model);
         return getOperationResponse.IsSuccessful ? Ok(getOperationResponse.ResultModel) : Problem(getOperationResponse.ErrorMessage, statusCode: (int)getOperationResponse.HttpStatusCode);
@@ -63,5 +61,14 @@ public class OrderController(IOrderService orderService, IAuthorizationService a
         if (model is null) return Json(MessageResource.Error_NullInputModel);
         var getOperationResponse = await _orderService.Delete(model);
         return getOperationResponse.IsSuccessful ? Ok(getOperationResponse.ResultModel) : Problem(getOperationResponse.ErrorMessage, statusCode: (int)getOperationResponse.HttpStatusCode);
+    }
+
+    private void SetModelRequesterId(object model)
+    {
+        var modelOwnerIdProperty = model.GetType().GetProperties().SingleOrDefault(p => p.IsDefined(typeof(RequesterIdAttribute), false));
+
+        if (modelOwnerIdProperty is null) return;
+
+        modelOwnerIdProperty.SetValue(model, User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Sid)!.Value);
     }
 }

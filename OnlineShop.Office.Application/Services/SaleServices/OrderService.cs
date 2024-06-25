@@ -3,7 +3,6 @@ using OnlineShop.Domain.Aggregates.SaleAggregates;
 using OnlineShop.Domain.Aggregates.UserManagementAggregates;
 using OnlineShop.Office.Application.Contracts.Sale;
 using OnlineShop.Office.Application.Dtos.SaleDtos.OrderDtos;
-using OnlineShop.Office.Application.Dtos.UserManagementDtos.UserDtos;
 using OnlineShop.RepositoryDesignPattern.Contracts;
 using PublicTools.Constants;
 using PublicTools.Resources;
@@ -21,7 +20,8 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
     {
         if (model is null) return new Response<GetOrderResultAppDto>(MessageResource.Error_NullInputModel);
         var selectOrderResponse = await _orderRepository.SelectNonDeletedByIdAsync(model.Id);
-        if (!selectOrderResponse.IsSuccessful) return new Response<GetOrderResultAppDto>(selectOrderResponse.ErrorMessage!);
+        if (!selectOrderResponse.IsSuccessful || selectOrderResponse.ResultModel!.BuyerId != model.BuyerId)
+            return new Response<GetOrderResultAppDto>(MessageResource.Error_UnauthorizedOwner);
 
         var resultDto = new GetOrderResultAppDto
         {
@@ -34,20 +34,13 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
             ModifyDateGregorian = selectOrderResponse.ResultModel.ModifyDateGregorian,
             ModifyDatePersian = selectOrderResponse.ResultModel.ModifyDatePersian,
 
-            Buyer = new GetOnlineShopUserResultAppDto
-            {
-                Id = selectOrderResponse.ResultModel!.BuyerId,
-                FirstName = selectOrderResponse.ResultModel!.Buyer!.FirstName,
-                LastName = selectOrderResponse.ResultModel!.Buyer.LastName
-            },
-
-            OrderDetailDtos = selectOrderResponse.ResultModel.OrderDetails
+            OrderDetails = selectOrderResponse.ResultModel.OrderDetails
             .Select(od => new OrderDetailAppDto
             {
-                OrderHeaderId = od.OrderHeaderId,
                 ProductId = od.ProductId,
                 Quantity = od.Quantity,
-                UnitPrice = od.UnitPrice
+                UnitPrice = od.UnitPrice,
+                SellerId = od.Product!.SellerId
             })
             .ToList()
         };
@@ -57,6 +50,8 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
 
     public async Task<IResponse<GetOrdersRangeResultAppDto>> GetRangeByBuyer(GetOrdersRangeByBuyerAppDto model)
     {
+        var buyer = await _userManager.FindByIdAsync(model.BuyerId);
+        if (buyer is null || buyer.IsSoftDeleted) return new Response<GetOrdersRangeResultAppDto>(MessageResource.Error_UserNotFound);
         var selectOrdersResponse = await _orderRepository.SelectNonDeletedsByBuyerAsync(model.BuyerId);
         if (!selectOrdersResponse.IsSuccessful) return new Response<GetOrdersRangeResultAppDto>(selectOrdersResponse.ErrorMessage!);
 
@@ -74,13 +69,6 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
                 IsModified = order.IsModified,
                 ModifyDateGregorian = order.ModifyDateGregorian,
                 ModifyDatePersian = order.ModifyDatePersian,
-
-                Buyer = new GetOnlineShopUserResultAppDto
-                {
-                    Id = order.BuyerId,
-                    FirstName = order.Buyer!.FirstName,
-                    LastName = order.Buyer.LastName
-                }
             };
 
             resultDto.GetResultDtos.Add(getResultDto);
@@ -89,21 +77,21 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
         return new Response<GetOrdersRangeResultAppDto>(resultDto);
     }
 
-    public async Task<IResponse<object>> Post(PostOrderAppDto model)
+    public async Task<IResponse> Post(PostOrderAppDto model)
     {
-        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
-
-        var buyer = await _userManager.FindByIdAsync(model.BuyerId);
-        if (buyer is null || buyer.IsSoftDeleted) return new Response<object>(MessageResource.Error_BuyerNotFound);
-        if (!_userManager.IsInRoleAsync(buyer, DatabaseConstants.DefaultRoles.BuyerName).Result) return new Response<object>(MessageResource.Error_WrongBuyer);
-
-        if (model.OrderDetailDtos.Count == 0) return new Response<object>(MessageResource.Error_EmptyOrderDetails);
+        #region[Guard]
+        if (model is null) return new Response(MessageResource.Error_NullInputModel);
+        var buyer = await _userManager.FindByIdAsync(model.BuyerId!);
+        if (buyer is null || buyer.IsSoftDeleted) return new Response(MessageResource.Error_BuyerNotFound);
+        if (!await _userManager.IsInRoleAsync(buyer, DatabaseConstants.DefaultRoles.BuyerName)) return new Response(MessageResource.Error_WrongBuyer);
+        if (model.OrderDetailDtos.Count == 0) return new Response(MessageResource.Error_EmptyOrderDetails);
+        #endregion
 
         string orderCode;
         while (true)
         {
             orderCode = $"O{CodeMaker.MakeRandom()}";
-            if (!_orderRepository.SelectByCodeAsync(orderCode).Result.IsSuccessful) break;
+            if (!(await _orderRepository.SelectByCodeAsync(orderCode)).IsSuccessful) break;
         }
 
         var newOrder = new OrderHeader
@@ -117,12 +105,12 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
 
         foreach (var orderDetailDto in model.OrderDetailDtos)
         {
-            if (orderDetailDto is null) return new Response<object>(MessageResource.Error_NullOrderDetail);
-            if (model.OrderDetailDtos.Select(od => od.ProductId).Where(pid => pid == orderDetailDto.ProductId).ToList().Count > 1) return new Response<object>(MessageResource.Error_DuplicateProductInAnOrder);
-            if (orderDetailDto.Quantity <= 0) return new Response<object>(MessageResource.Error_ZeroOrLessQuantity);
+            if (orderDetailDto is null) return new Response(MessageResource.Error_NullOrderDetail);
+            if (model.OrderDetailDtos.Select(od => od.ProductId).Where(pid => pid == orderDetailDto.ProductId).ToList().Count > 1) return new Response(MessageResource.Error_DuplicateProductInAnOrder);
+            if (orderDetailDto.Quantity <= 0) return new Response(MessageResource.Error_ZeroOrLessQuantity);
 
             var selectProductResponse = await _productRepository.SelectByIdAsync(orderDetailDto.ProductId);
-            if (!selectProductResponse.IsSuccessful) return new Response<object>(MessageResource.Error_ProductNotFound);
+            if (!selectProductResponse.IsSuccessful) return new Response(MessageResource.Error_ProductNotFound);
             var orderDetailProduct = selectProductResponse.ResultModel;
 
             var orderDetail = new OrderDetail
@@ -138,17 +126,19 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
 
         if (insertOrderResponse.IsSuccessful) await _orderRepository.SaveAsync();
 
-        return insertOrderResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(insertOrderResponse.ErrorMessage!);
+        return insertOrderResponse.IsSuccessful ? new Response(model) : new Response(insertOrderResponse.ErrorMessage!);
     }
 
-    public async Task<IResponse<object>> Put(PutOrderAppDto model)
+    public async Task<IResponse> Put(PutOrderAppDto model)
     {
-        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
-
-        if (model.OrderDetailDtos.Count == 0) return new Response<object>(MessageResource.Error_EmptyOrderDetails);
-
+        #region[Guards]
+        if (model is null) return new Response(MessageResource.Error_NullInputModel);
+        var buyer = await _userManager.FindByIdAsync(model.BuyerId!);
+        if (buyer is null || buyer.IsSoftDeleted) return new Response(MessageResource.Error_UserNotFound);
+        if (model.OrderDetailDtos.Count == 0) return new Response(MessageResource.Error_EmptyOrderDetails);
         var selectOrderResponse = await _orderRepository.SelectNonDeletedByIdAsync(model.Id);
-        if (!selectOrderResponse.IsSuccessful) return new Response<object>(MessageResource.Error_OrderNotFound);
+        if (!selectOrderResponse.IsSuccessful || selectOrderResponse.ResultModel!.BuyerId != model.BuyerId) return new Response(MessageResource.Error_UnauthorizedOwner);
+        #endregion
 
         var updatedOrder = selectOrderResponse.ResultModel;
 
@@ -159,17 +149,16 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
 
         foreach (var orderDetailDto in model.OrderDetailDtos)
         {
-            if (orderDetailDto is null) return new Response<object>(MessageResource.Error_NullOrderDetail);
-            if (model.OrderDetailDtos.Select(od => od.ProductId).Where(pid => pid == orderDetailDto.ProductId).ToList().Count > 1) return new Response<object>(MessageResource.Error_DuplicateProductInAnOrder);
-            if (orderDetailDto.Quantity <= 0) return new Response<object>(MessageResource.Error_ZeroOrLessQuantity);
+            if (orderDetailDto is null) return new Response(MessageResource.Error_NullOrderDetail);
+            if (model.OrderDetailDtos.Select(od => od.ProductId).Where(pid => pid == orderDetailDto.ProductId).ToList().Count > 1) return new Response(MessageResource.Error_DuplicateProductInAnOrder);
+            if (orderDetailDto.Quantity <= 0) return new Response(MessageResource.Error_ZeroOrLessQuantity);
 
             var selectProductResponse = await _productRepository.SelectByIdAsync(orderDetailDto.ProductId);
-            if (!selectProductResponse.IsSuccessful) return new Response<object>(MessageResource.Error_ProductNotFound);
+            if (!selectProductResponse.IsSuccessful) return new Response(MessageResource.Error_ProductNotFound);
             var orderDetailProduct = selectProductResponse.ResultModel;
 
             var orderDetail = new OrderDetail
             {
-                OrderHeaderId = model.Id,
                 ProductId = orderDetailDto.ProductId,
                 Quantity = orderDetailDto.Quantity,
                 UnitPrice = orderDetailProduct!.UnitPrice
@@ -181,15 +170,16 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
 
         if (updateOrderResponse.IsSuccessful) await _orderRepository.SaveAsync();
 
-        return updateOrderResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(updateOrderResponse.ErrorMessage!);
+        return updateOrderResponse.IsSuccessful ? new Response(model) : new Response(updateOrderResponse.ErrorMessage!);
     }
 
-    public async Task<IResponse<object>> Delete(DeleteOrderAppDto model)
+    public async Task<IResponse> Delete(DeleteOrderAppDto model)
     {
-        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
+        if (model is null) return new Response(MessageResource.Error_NullInputModel);
 
         var selectOrderResponse = await _orderRepository.SelectNonDeletedByIdAsync(model.Id);
-        if (!selectOrderResponse.IsSuccessful) return new Response<object>(selectOrderResponse.ErrorMessage!);
+        if (!selectOrderResponse.IsSuccessful || selectOrderResponse.ResultModel!.BuyerId != model.BuyerId)
+            return new Response(MessageResource.Error_UnauthorizedOwner);
 
         var deletedOrder = selectOrderResponse.ResultModel;
         deletedOrder!.IsSoftDeleted = true;
@@ -200,18 +190,6 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
 
         if (updateOrderResponse.IsSuccessful) await _orderRepository.SaveAsync();
 
-        return updateOrderResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(updateOrderResponse.ErrorMessage!);
-    }
-
-    public async Task<IResponse<GetOrderResultAppDto>> Authorize(Guid id)
-    {
-        var selectOrderResponse = await _orderRepository.SelectByIdAsync(id);
-        if (!selectOrderResponse.IsSuccessful) return new Response<GetOrderResultAppDto>(selectOrderResponse.ErrorMessage!);
-
-        var result = new GetOrderResultAppDto
-        {
-            BuyerId = selectOrderResponse.ResultModel!.BuyerId,
-        };
-        return new Response<GetOrderResultAppDto>(result);
+        return updateOrderResponse.IsSuccessful ? new Response(model) : new Response(updateOrderResponse.ErrorMessage!);
     }
 }

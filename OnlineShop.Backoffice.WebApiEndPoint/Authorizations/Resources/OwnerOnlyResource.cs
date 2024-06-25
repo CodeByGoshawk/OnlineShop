@@ -16,7 +16,7 @@ public class OwnerOnlyResource(object service, object modelId)
 
         var ownerIdProperties = ((object)resultModel!).GetType()
             .GetProperties()
-            .Where(p => p.IsDefined(typeof(OwnerIdAttribute), false));
+            .Where(p => p.IsDefined(typeof(RequesterIdAttribute), false));
 
         return ownerIdProperties!.Select(p => (string)p.GetValue(resultModel)).ToList();
     }

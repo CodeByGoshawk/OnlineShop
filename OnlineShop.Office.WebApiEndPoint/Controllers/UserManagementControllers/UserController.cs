@@ -2,26 +2,24 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Office.Application.Contracts.UserManagement;
 using OnlineShop.Office.Application.Dtos.UserManagementDtos.UserDtos;
-using PublicTools.Constants;
+using PublicTools.Attributes;
 using PublicTools.Resources;
+using System.Security.Claims;
 
 namespace OnlineShop.Office.WebApiEndPoint.Controllers.UserManagementControllers;
 
 [ApiController]
 [Route("api/User")]
-public class UserController(IUserService userService, IAuthorizationService authorizationService) : Controller
+public class UserController(IUserService userService) : Controller
 {
     private readonly IUserService _userService = userService;
-    private readonly IAuthorizationService _authorizationService = authorizationService;
 
     [Authorize]
-    [HttpGet("Get")]
-    public async Task<IActionResult> Get([FromBody] GetOnlineShopUserAppDto model)
+    [HttpGet("GetSelf")]
+    public async Task<IActionResult> Get()
     {
-        if (model is null) return Json(MessageResource.Error_NullInputModel);
-
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, model, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        var model = new GetOnlineShopUserAppDto();
+        SetModelRequesterId(model);
 
         var getOperationResponse = await _userService.Get(model);
         return getOperationResponse.IsSuccessful ? Ok(getOperationResponse.ResultModel) : Problem(getOperationResponse.ErrorMessage, statusCode: (int)getOperationResponse.HttpStatusCode);
@@ -42,8 +40,7 @@ public class UserController(IUserService userService, IAuthorizationService auth
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, model, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        SetModelRequesterId(model);
 
         var postOperationResponse = await _userService.Put(model);
         return postOperationResponse.IsSuccessful ? Ok(postOperationResponse.Message) : Problem(postOperationResponse.ErrorMessage, statusCode: (int)postOperationResponse.HttpStatusCode);
@@ -55,23 +52,29 @@ public class UserController(IUserService userService, IAuthorizationService auth
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, model, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        SetModelRequesterId(model);
 
         var postOperationResponse = await _userService.ChangePassword(model);
         return postOperationResponse.IsSuccessful ? Ok(postOperationResponse.Message) : Problem(postOperationResponse.ErrorMessage, statusCode: (int)postOperationResponse.HttpStatusCode);
     }
 
     [Authorize]
-    [HttpPut("Delete")]
-    public async Task<IActionResult> Delete([FromBody] DeleteOnlineShopUserAppDto model)
+    [HttpDelete("DeleteSelf")]
+    public async Task<IActionResult> Delete()
     {
-        if (model is null) return Json(MessageResource.Error_NullInputModel);
-
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, model, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        var model = new DeleteOnlineShopUserAppDto();
+        SetModelRequesterId(model);
 
         var postOperationResponse = await _userService.Delete(model);
         return postOperationResponse.IsSuccessful ? Ok(postOperationResponse.Message) : Problem(postOperationResponse.ErrorMessage, statusCode: (int)postOperationResponse.HttpStatusCode);
+    }
+
+    private void SetModelRequesterId(object model)
+    {
+        var modelOwnerIdProperty = model.GetType().GetProperties().SingleOrDefault(p => p.IsDefined(typeof(RequesterIdAttribute), false));
+
+        if (modelOwnerIdProperty is null) return;
+
+        modelOwnerIdProperty.SetValue(model, User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Sid)!.Value);
     }
 }

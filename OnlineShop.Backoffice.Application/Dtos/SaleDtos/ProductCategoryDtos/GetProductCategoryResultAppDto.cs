@@ -8,6 +8,5 @@ public class GetProductCategoryResultAppDto
 
     public string Title { get; set; }
 
-    public ProductCategory? Parent { get; set; }
-    public List<Product>? Products { get; set; }
+    public GetProductCategoryResultAppDto? Parent { get; set; }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineShop.EFCore;
 
@@ -11,9 +12,11 @@ using OnlineShop.EFCore;
 namespace OnlineShop.EFCore.Migrations
 {
     [DbContext(typeof(OnlineShopDbContext))]
-    partial class OnlineShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240613215446_002")]
+    partial class _002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -348,7 +351,7 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.Property<string>("CellPhone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -421,7 +424,7 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.Property<string>("NationalId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NormalizedEmail")
                         .IsRequired()
@@ -469,7 +472,17 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CellPhone")
+                        .IsUnique();
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("NationalId")
+                        .IsUnique();
+
                     b.HasIndex("NormalizedEmail")
+                        .IsUnique()
                         .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
@@ -487,13 +500,13 @@ namespace OnlineShop.EFCore.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CellPhone = "09120000000",
-                            ConcurrencyStamp = "14863898-67e8-4ea8-935e-137fdd7837a0",
-                            CreatedDateGregorian = new DateTime(2024, 6, 25, 17, 36, 58, 263, DateTimeKind.Local).AddTicks(2202),
-                            CreatedDatePersian = "1403/4/5 17:36:58.2632226",
+                            ConcurrencyStamp = "56bfb3a6-5d92-4de1-8f90-489e73898c5b",
+                            CreatedDateGregorian = new DateTime(2024, 6, 14, 1, 24, 43, 253, DateTimeKind.Local).AddTicks(1197),
+                            CreatedDatePersian = "1403/3/25 01:24:43.2531214",
                             Email = "Shahbazi.amh@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Amir",
-                            IsActive = true,
+                            IsActive = false,
                             IsCellPhoneConfirmed = true,
                             IsModified = false,
                             IsNationalIdConfirmed = true,
@@ -503,9 +516,9 @@ namespace OnlineShop.EFCore.Migrations
                             NationalId = "0440000000",
                             NormalizedEmail = "SHAHBAZI.AMH@GMAIL.COM",
                             NormalizedUserName = "A.SHAHBAZI",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKuz9LL2KlxKDU4a0pZr9TE4kz6tvW2JXKOS8vPBxWAt6ybqN5tYqT/yADBaqxhmbQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDXTnz3FyzbuTJYOC2FpomWGEsywA3Gc7TZB5nKeLNfOpJmsSIGFDPg3zYhK1RPTYg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ee8dc3b7-2edf-4fe2-85a0-27bd33485a03",
+                            SecurityStamp = "92abd87c-e5d8-46ff-aeb7-2eb26a5560d4",
                             TwoFactorEnabled = false,
                             UserName = "a.Shahbazi"
                         });

@@ -18,7 +18,7 @@ public class Response<TResult> : IResponse<TResult>
         if (result is not null)
         {
             IsSuccessful = true;
-            Message = "Successful";
+            Message = "عملیات با موفقیت انجام شد";
             ErrorMessage = string.Empty;
             HttpStatusCode = HttpStatusCode.OK;
         }
@@ -26,8 +26,8 @@ public class Response<TResult> : IResponse<TResult>
         {
             IsSuccessful = false;
             Message = string.Empty;
-            ErrorMessage = "Error";
-            HttpStatusCode = HttpStatusCode.Ambiguous;
+            ErrorMessage = "عملیات ناموفق";
+            HttpStatusCode = HttpStatusCode.NotAcceptable;
         }
 
     }
@@ -40,9 +40,41 @@ public class Response<TResult> : IResponse<TResult>
         HttpStatusCode = HttpStatusCode.Ambiguous;
     }
 
+    public Response(bool isSuccessful)
+    {
+        IsSuccessful = isSuccessful;
+        if (isSuccessful)
+        {
+            Message = "عملیات با موفقیت انجام شد";
+            ErrorMessage = string.Empty;
+            HttpStatusCode = HttpStatusCode.OK;
+        }
+        else
+        {
+            Message = string.Empty;
+            ErrorMessage = "عملیات ناموفق";
+            HttpStatusCode = HttpStatusCode.NotAcceptable;
+        }
+    }
+
     public bool IsSuccessful { get; set; }
     public string? Message { get; set; }
     public string? ErrorMessage { get; set; }
     public TResult? ResultModel { get; set; }
     public HttpStatusCode HttpStatusCode { get; set; }
+}
+
+public class Response : Response<object>, IResponse
+{
+    public Response(string errorMessage) : base(errorMessage)
+    {
+    }
+
+    public Response(bool isSuccessful) : base(isSuccessful)
+    {
+    }
+
+    public Response(object result) : base(result)
+    {
+    }
 }

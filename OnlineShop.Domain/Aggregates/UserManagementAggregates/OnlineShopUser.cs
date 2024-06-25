@@ -13,7 +13,7 @@ public class OnlineShopUser : IdentityUser, IActiveEntity, ICreatedEntity, IModi
     public string? NationalId { get; set; }
     public bool IsNationalIdConfirmed { get; set; }
 
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
 
     public string? CellPhone { get; set; }
     public bool IsCellPhoneConfirmed { get; set; }

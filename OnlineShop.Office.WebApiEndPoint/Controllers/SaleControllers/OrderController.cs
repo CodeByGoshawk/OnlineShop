@@ -1,27 +1,24 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OnlineShop.Backoffice.WebApiEndPoint.Authorizations.Handlers;
 using OnlineShop.Office.Application.Contracts.Sale;
 using OnlineShop.Office.Application.Dtos.SaleDtos.OrderDtos;
-using PublicTools.Constants;
+using PublicTools.Attributes;
 using PublicTools.Resources;
+using System.Security.Claims;
 
 namespace OnlineShop.Office.WebApiEndPoint.Controllers.SaleControllers;
 [ApiController]
 [Route("api/Order")]
-public class OrderController(IOrderService orderService, IAuthorizationService authorizationService) : Controller
+public class OrderController(IOrderService orderService) : Controller
 {
     private readonly IOrderService _orderService = orderService;
-    private readonly IAuthorizationService _authorizationService = authorizationService;
 
     [Authorize]
     [HttpGet("GetBuyerOrders")]
-    public async Task<IActionResult> GetRangeByBuyer(GetOrdersRangeByBuyerAppDto model)
+    public async Task<IActionResult> GetRangeByBuyer()
     {
-        if (model is null) return Json(MessageResource.Error_NullInputModel);
-
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, model, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        var model = new GetOrdersRangeByBuyerAppDto();
+        SetModelRequesterId(model);
 
         var getOrdersResponse = await _orderService.GetRangeByBuyer(model);
         return getOrdersResponse.IsSuccessful ? Ok(getOrdersResponse.ResultModel!.GetResultDtos) : Problem(getOrdersResponse.ErrorMessage, statusCode: (int)getOrdersResponse.HttpStatusCode);
@@ -33,9 +30,7 @@ public class OrderController(IOrderService orderService, IAuthorizationService a
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var resource = new OwnerOnlyResource(_orderService, model.Id);
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, resource, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        SetModelRequesterId(model);
 
         var getOrderResponse = await _orderService.Get(model);
         return getOrderResponse.IsSuccessful ? Ok(getOrderResponse.ResultModel) : Problem(getOrderResponse.ErrorMessage, statusCode: (int)getOrderResponse.HttpStatusCode);
@@ -47,8 +42,7 @@ public class OrderController(IOrderService orderService, IAuthorizationService a
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, model, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        SetModelRequesterId(model);
 
         var postOrderResponse = await _orderService.Post(model);
         return postOrderResponse.IsSuccessful ? Ok(postOrderResponse.Message) : Problem(postOrderResponse.ErrorMessage, statusCode: (int)postOrderResponse.HttpStatusCode);
@@ -60,9 +54,7 @@ public class OrderController(IOrderService orderService, IAuthorizationService a
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var resource = new OwnerOnlyResource(_orderService, model.Id);
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, resource, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        SetModelRequesterId(model);
 
         var putOrderResponse = await _orderService.Put(model);
         return putOrderResponse.IsSuccessful ? Ok(putOrderResponse.Message) : Problem(putOrderResponse.ErrorMessage, statusCode: (int)putOrderResponse.HttpStatusCode);
@@ -74,11 +66,18 @@ public class OrderController(IOrderService orderService, IAuthorizationService a
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var resource = new OwnerOnlyResource(_orderService, model.Id);
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, resource, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        SetModelRequesterId(model);
 
         var deleteOrderResponse = await _orderService.Delete(model);
         return deleteOrderResponse.IsSuccessful ? Ok(deleteOrderResponse.Message) : Problem(deleteOrderResponse.ErrorMessage, statusCode: (int)deleteOrderResponse.HttpStatusCode);
+    }
+
+    private void SetModelRequesterId(object model)
+    {
+        var modelOwnerIdProperty = model.GetType().GetProperties().SingleOrDefault(p => p.IsDefined(typeof(RequesterIdAttribute), false));
+
+        if (modelOwnerIdProperty is null) return;
+
+        modelOwnerIdProperty.SetValue(model, User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Sid)!.Value);
     }
 }

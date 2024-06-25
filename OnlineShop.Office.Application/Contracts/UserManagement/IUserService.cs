@@ -5,8 +5,8 @@ namespace OnlineShop.Office.Application.Contracts.UserManagement;
 public interface IUserService
 {
     Task<IResponse<GetOnlineShopUserResultAppDto>> Get(GetOnlineShopUserAppDto model);
-    Task<IResponse<object>> Post(PostOnlineShopUserAppDto model);
-    Task<IResponse<object>> Put(PutOnlineShopUserAppDto model);
-    Task<IResponse<object>> ChangePassword(ChangePasswordAppDto model);
-    Task<IResponse<object>> Delete(DeleteOnlineShopUserAppDto model);
+    Task<IResponse> Post(PostOnlineShopUserAppDto model);
+    Task<IResponse> Put(PutOnlineShopUserAppDto model);
+    Task<IResponse> ChangePassword(ChangePasswordAppDto model);
+    Task<IResponse> Delete(DeleteOnlineShopUserAppDto model);
 }

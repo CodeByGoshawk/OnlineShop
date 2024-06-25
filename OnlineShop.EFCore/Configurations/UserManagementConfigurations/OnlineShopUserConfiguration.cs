@@ -21,17 +21,13 @@ internal class OnlineShopUserConfiguration : IEntityTypeConfiguration<OnlineShop
         builder.Property(p => p.LastName).IsRequired();
 
         builder.Property(p => p.NationalId).IsRequired();
-        builder.HasIndex(p => p.NationalId).IsUnique();
         builder.Property(p => p.IsNationalIdConfirmed).IsRequired().HasDefaultValue(false);
 
         builder.Property(p => p.CellPhone).IsRequired();
-        builder.HasIndex(p => p.CellPhone).IsUnique();
         builder.Property(p => p.IsCellPhoneConfirmed).IsRequired().HasDefaultValue(false);
 
         builder.Property(p => p.Email).IsRequired();
-        builder.HasIndex(p => p.Email).IsUnique();
         builder.Property(p => p.NormalizedEmail).IsRequired();
-        builder.HasIndex(p => p.NormalizedEmail).IsUnique();
         builder.Property(p => p.EmailConfirmed).IsRequired().HasDefaultValue(false);
 
         builder.Property(p => p.PhoneNumberConfirmed).IsRequired().HasDefaultValue(false);

@@ -47,15 +47,15 @@ public class ProductCategoryService(IProductCategoryRepository productCategoryRe
         return new Response<GetAllProductCategoriesResultAppDto>(result);
     } // Admin/Seller
 
-    public async Task<IResponse<object>> Post(PostProductCategoryAppDto model)
+    public async Task<IResponse> Post(PostProductCategoryAppDto model)
     {
-        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
-        if (model.Title is null) return new Response<object>(MessageResource.Error_RequiredField);
+        if (model is null) return new Response(MessageResource.Error_NullInputModel);
+        if (model.Title is null) return new Response(MessageResource.Error_RequiredField);
 
         if (model.ParentId is not null and not 0)
         {
             var selectParentCategoryResponse = await _productCategoryRepository.SelectByIdAsync((int)model.ParentId);
-            if (!selectParentCategoryResponse.IsSuccessful) return new Response<object>(MessageResource.Error_ParentCategoryNotFound);
+            if (!selectParentCategoryResponse.IsSuccessful) return new Response(MessageResource.Error_ParentCategoryNotFound);
         }
 
         var newCategory = new ProductCategory
@@ -68,23 +68,23 @@ public class ProductCategoryService(IProductCategoryRepository productCategoryRe
 
         if (insertCategoryResponse.IsSuccessful) await _productCategoryRepository.SaveAsync();
 
-        return insertCategoryResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(insertCategoryResponse.ErrorMessage!);
+        return insertCategoryResponse.IsSuccessful ? new Response(model) : new Response(insertCategoryResponse.ErrorMessage!);
     } // Admin
 
-    public async Task<IResponse<object>> Put(PutProductCategoryAppDto model)
+    public async Task<IResponse> Put(PutProductCategoryAppDto model)
     {
-        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
-        if (model.Title is null) return new Response<object>(MessageResource.Error_RequiredField);
-        if (model.Id == model.ParentId) return new Response<object>(MessageResource.Error_ProductCategorySameIdandParentId);
+        if (model is null) return new Response(MessageResource.Error_NullInputModel);
+        if (model.Title is null) return new Response(MessageResource.Error_RequiredField);
+        if (model.Id == model.ParentId) return new Response(MessageResource.Error_ProductCategorySameIdandParentId);
 
         if (model.ParentId is not null and not 0)
         {
             var selectParentCategoryResponse = await _productCategoryRepository.SelectByIdAsync((int)model.ParentId);
-            if (selectParentCategoryResponse.ResultModel is null) return new Response<object>(MessageResource.Error_ParentCategoryNotFound);
+            if (selectParentCategoryResponse.ResultModel is null) return new Response(MessageResource.Error_ParentCategoryNotFound);
         }
 
         var selectCategoryResponse = await _productCategoryRepository.SelectByIdAsync(model.Id);
-        if (!selectCategoryResponse.IsSuccessful) return new Response<object>(selectCategoryResponse.ErrorMessage!);
+        if (!selectCategoryResponse.IsSuccessful) return new Response(selectCategoryResponse.ErrorMessage!);
 
         var updatedCategory = selectCategoryResponse.ResultModel;
         updatedCategory!.ParentId = model.ParentId != 0 ? model.ParentId : null;
@@ -94,23 +94,23 @@ public class ProductCategoryService(IProductCategoryRepository productCategoryRe
 
         if (updateCategoryResponse.IsSuccessful) await _productCategoryRepository.SaveAsync();
 
-        return updateCategoryResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(updateCategoryResponse.ErrorMessage!);
+        return updateCategoryResponse.IsSuccessful ? new Response(model) : new Response(updateCategoryResponse.ErrorMessage!);
     } // Admin
 
-    public async Task<IResponse<object>> Delete(DeleteProductCategoryAppDto model)
+    public async Task<IResponse> Delete(DeleteProductCategoryAppDto model)
     {
-        if (model is null) return new Response<object>(MessageResource.Error_NullInputModel);
+        if (model is null) return new Response(MessageResource.Error_NullInputModel);
 
         var selectCategoryResponse = await _productCategoryRepository.SelectByIdAsync(model.Id);
-        if (!selectCategoryResponse.IsSuccessful) return new Response<object>(selectCategoryResponse.ErrorMessage!);
+        if (!selectCategoryResponse.IsSuccessful) return new Response(selectCategoryResponse.ErrorMessage!);
 
         var deletedCategory = selectCategoryResponse.ResultModel;
-        if (_productCategoryRepository.SelectAllAsync().Result.ResultModel!.Any(pc => pc.ParentId == model.Id)) return new Response<object>(MessageResource.Error_ProductCategoryHasChild);
-        if (_productRepository.SelectAllAsync().Result.ResultModel!.Any(p => p.ProductCategoryId == model.Id)) return new Response<object>(MessageResource.Error_ProductCategoryHasProduct);
+        if (_productCategoryRepository.SelectAllAsync().Result.ResultModel!.Any(pc => pc.ParentId == model.Id)) return new Response(MessageResource.Error_ProductCategoryHasChild);
+        if (_productRepository.SelectAllAsync().Result.ResultModel!.Any(p => p.ProductCategoryId == model.Id)) return new Response(MessageResource.Error_ProductCategoryHasProduct);
         var deleteCategoryResponse = await _productCategoryRepository.DeleteAsync(deletedCategory!);
 
         if (deleteCategoryResponse.IsSuccessful) await _productCategoryRepository.SaveAsync();
 
-        return deleteCategoryResponse.IsSuccessful ? new Response<object>(model) : new Response<object>(deleteCategoryResponse.ErrorMessage!);
+        return deleteCategoryResponse.IsSuccessful ? new Response(model) : new Response(deleteCategoryResponse.ErrorMessage!);
     } // Admin
 }

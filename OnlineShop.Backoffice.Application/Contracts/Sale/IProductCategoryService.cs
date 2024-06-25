@@ -6,7 +6,7 @@ public interface IProductCategoryService
 {
     Task<IResponse<GetProductCategoryResultAppDto>> Get(GetProductCategoryAppDto model);
     Task<IResponse<GetAllProductCategoriesResultAppDto>> GetAll();
-    Task<IResponse<object>> Post(PostProductCategoryAppDto model);
-    Task<IResponse<object>> Put(PutProductCategoryAppDto model);
-    Task<IResponse<object>> Delete(DeleteProductCategoryAppDto model);
+    Task<IResponse> Post(PostProductCategoryAppDto model);
+    Task<IResponse> Put(PutProductCategoryAppDto model);
+    Task<IResponse> Delete(DeleteProductCategoryAppDto model);
 }

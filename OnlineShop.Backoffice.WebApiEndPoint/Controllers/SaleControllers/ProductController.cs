@@ -2,34 +2,32 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Backoffice.Application.Contracts.Sale;
 using OnlineShop.Backoffice.Application.Dtos.SaleDtos.ProductDtos;
-using OnlineShop.Backoffice.WebApiEndPoint.Authorizations.Handlers;
+using PublicTools.Attributes;
 using PublicTools.Constants;
 using PublicTools.Resources;
+using System.Security.Claims;
 
 namespace OnlineShop.Backoffice.WebApiEndPoint.Controllers.SaleControllers;
 [ApiController]
 [Route("api/Product")]
-public class ProductController(IProductService productService, IAuthorizationService authorizationService) : Controller
+public class ProductController(IProductService productService) : Controller
 {
     private readonly IProductService _productService = productService;
-    private readonly IAuthorizationService _authorizationService = authorizationService;
 
     [Authorize(Policy = PolicyConstants.AdminsOnly)]
     [HttpGet("GetAllWithPrivateData")]
     public async Task<IActionResult> GetAllWithPrivateData()
     {
         var getAllOperationResponse = await _productService.GetAllWithPrivateData();
-        return getAllOperationResponse.IsSuccessful ? Ok(getAllOperationResponse.ResultModel.GetResultDtos) : Problem(getAllOperationResponse.ErrorMessage, statusCode: 406);
+        return getAllOperationResponse.IsSuccessful ? Ok(getAllOperationResponse.ResultModel!.GetResultDtos) : Problem(getAllOperationResponse.ErrorMessage, statusCode: 406);
     }
 
     [Authorize(Roles = "Seller")]
-    [HttpGet("GetBySeller")]
-    public async Task<IActionResult> GetRangeBySeller([FromBody] GetProductsRangeBySellerAppDto model)
+    [HttpGet("GetSelfProducts")]
+    public async Task<IActionResult> GetRangeBySeller()
     {
-        if (model is null) return Json(MessageResource.Error_NullInputModel);
-
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, model, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        var model = new GetProductsRangeBySellerAppDto();
+        SetModelRequesterId(model);
 
         var getOperationResponse = await _productService.GetRangeBySeller(model);
         return getOperationResponse.IsSuccessful ? Ok(getOperationResponse.ResultModel) : Problem(getOperationResponse.ErrorMessage, statusCode: (int)getOperationResponse.HttpStatusCode);
@@ -50,9 +48,7 @@ public class ProductController(IProductService productService, IAuthorizationSer
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var resource = new OwnerOnlyResource(_productService, model.Id);
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, resource, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        SetModelRequesterId(model);
 
         var getOperationResponse = await _productService.Get(model);
         return getOperationResponse.IsSuccessful ? Ok(getOperationResponse.ResultModel) : Problem(getOperationResponse.ErrorMessage, statusCode: (int)getOperationResponse.HttpStatusCode);
@@ -64,8 +60,7 @@ public class ProductController(IProductService productService, IAuthorizationSer
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, model, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        SetModelRequesterId(model);
 
         var postOperationResponse = await _productService.Post(model);
         return postOperationResponse.IsSuccessful ? Ok(postOperationResponse.Message) : Problem(postOperationResponse.ErrorMessage, statusCode: (int)postOperationResponse.HttpStatusCode);
@@ -77,9 +72,7 @@ public class ProductController(IProductService productService, IAuthorizationSer
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var resource = new OwnerOnlyResource(_productService, model.Id);
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, resource, PolicyConstants.OwnerOnlyPolicy);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        SetModelRequesterId(model);
 
         var putOperationResponse = await _productService.Put(model);
         return putOperationResponse.IsSuccessful ? Ok(putOperationResponse.Message) : Problem(putOperationResponse.ErrorMessage, statusCode: (int)putOperationResponse.HttpStatusCode);
@@ -91,11 +84,18 @@ public class ProductController(IProductService productService, IAuthorizationSer
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
 
-        var resource = new OwnerOnlyResource(_productService, model.Id);
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, resource, PolicyConstants.AdminsOrOwnerOnly);
-        if (!authorizationResult.Succeeded) return Forbid(MessageResource.Error_UnauthorizedOwner);
+        SetModelRequesterId(model);
 
         var deleteOperationResponse = await _productService.Delete(model);
         return deleteOperationResponse.IsSuccessful ? Ok(deleteOperationResponse.Message) : Problem(deleteOperationResponse.ErrorMessage, statusCode: (int)deleteOperationResponse.HttpStatusCode);
+    }
+
+    private void SetModelRequesterId(object model)
+    {
+        var modelOwnerIdProperty = model.GetType().GetProperties().SingleOrDefault(p => p.IsDefined(typeof(RequesterIdAttribute), false));
+
+        if (modelOwnerIdProperty is null) return;
+
+        modelOwnerIdProperty.SetValue(model, User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Sid)!.Value);
     }
 }

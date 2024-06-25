@@ -1,5 +1,6 @@
 ﻿using OnlineShop.Office.Application.Contracts.Sale;
 using OnlineShop.Office.Application.Dtos.SaleDtos.ProductCategoryDtos;
+using OnlineShop.Office.Application.Dtos.SaleDtos.ProductDtos;
 using OnlineShop.RepositoryDesignPattern.Contracts;
 using ResponseFramewrok;
 
@@ -17,7 +18,15 @@ public class ProductCategoryService(IProductCategoryRepository productCategoryRe
             Id = selectCategoryResponse.ResultModel!.Id,
             ParentId = selectCategoryResponse.ResultModel.ParentId,
             Title = selectCategoryResponse.ResultModel.Title!,
-            Products = selectCategoryResponse.ResultModel.Products
+            Products = selectCategoryResponse.ResultModel.Products!
+            .Select(product => new GetProductResultAppDto
+            {
+                Id = product.Id,
+                Code = product.Code!,
+                Title = product.Title!,
+                UnitPrice = product.UnitPrice,
+                Picture = product.Picture
+            }).ToList()
         };
         return new Response<GetProductCategoryResultAppDto>(resultDto);
     }
