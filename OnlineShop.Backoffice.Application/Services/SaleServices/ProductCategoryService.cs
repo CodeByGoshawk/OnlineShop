@@ -1,4 +1,5 @@
-﻿using OnlineShop.Backoffice.Application.Contracts.Sale;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineShop.Backoffice.Application.Contracts.Sale;
 using OnlineShop.Backoffice.Application.Dtos.SaleDtos.ProductCategoryDtos;
 using OnlineShop.Domain.Aggregates.SaleAggregates;
 using OnlineShop.RepositoryDesignPattern.Contracts;
@@ -81,10 +82,14 @@ public class ProductCategoryService(IProductCategoryRepository productCategoryRe
         {
             var selectParentCategoryResponse = await _productCategoryRepository.SelectByIdAsync((int)model.ParentId);
             if (selectParentCategoryResponse.ResultModel is null) return new Response(MessageResource.Error_ParentCategoryNotFound);
+
+            List<int> categoryChildsIds = [];
+            await GetAllLevelsChildsIds(model.Id, categoryChildsIds);
+            if (categoryChildsIds.Contains((int)model.ParentId!)) return new Response(MessageResource.Error_CannotSetProductCategoryChildsAsParent);
         }
 
         var selectCategoryResponse = await _productCategoryRepository.SelectByIdAsync(model.Id);
-        if (!selectCategoryResponse.IsSuccessful) return new Response(selectCategoryResponse.ErrorMessage!);
+        if (!selectCategoryResponse.IsSuccessful) return new Response(selectCategoryResponse.ErrorMessage!);       
 
         var updatedCategory = selectCategoryResponse.ResultModel;
         updatedCategory!.ParentId = model.ParentId != 0 ? model.ParentId : null;
@@ -113,4 +118,26 @@ public class ProductCategoryService(IProductCategoryRepository productCategoryRe
 
         return deleteCategoryResponse.IsSuccessful ? new Response(model) : new Response(deleteCategoryResponse.ErrorMessage!);
     } // Admin
+
+    private async Task<IResponse> GetAllLevelsChildsIds(int? parentId,List<int> allLevelChildsIds)
+    {
+        if (parentId is null or 0) return new Response(MessageResource.Error_WrongProductCategory);
+
+        var childs = await _productCategoryRepository
+            .SelectAll()
+            .ResultModel!
+            .Where(pc => pc.ParentId == parentId)
+            .ToListAsync();
+
+        if (childs.Count == 0) return new Response(true);
+
+        allLevelChildsIds.AddRange(childs.Select(child => child.Id));
+
+        foreach(var child in childs)
+        {
+            await GetAllLevelsChildsIds(child.Id, allLevelChildsIds);
+        }
+
+        return new Response(true);
+    }
 }

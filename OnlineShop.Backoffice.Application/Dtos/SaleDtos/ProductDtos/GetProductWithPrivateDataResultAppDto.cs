@@ -2,7 +2,7 @@
 using PublicTools.Attributes;
 
 namespace OnlineShop.Backoffice.Application.Dtos.SaleDtos.ProductDtos;
-public class GetProductResultAppDto
+public class GetProductWithPrivateDataResultAppDto
 {
     public Guid Id { get; set; }
     public int ProductCategoryId { get; set; }
@@ -15,6 +15,14 @@ public class GetProductResultAppDto
     public string? Picture { get; set; }
     public DateTime CreatedDateGregorian { get; set; }
     public string CreatedDatePersian { get; set; }
+
+    public bool IsModified { get; set; }
+    public DateTime? ModifyDateGregorian { get; set; }
+    public string? ModifyDatePersian { get; set; }
+
+    public bool IsSoftDeleted { get; set; }
+    public DateTime? SoftDeleteDateGregorian { get; set; }
+    public string? SoftDeleteDatePersian { get; set; }
 
     public ProductCategory? ProductCategory { get; set; }
 }

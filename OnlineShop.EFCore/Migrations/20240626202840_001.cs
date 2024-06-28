@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -43,10 +44,10 @@ namespace OnlineShop.EFCore.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Picture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NationalId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NationalId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsNationalIdConfirmed = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    CellPhone = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CellPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsCellPhoneConfirmed = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     CreatedDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -220,9 +221,7 @@ namespace OnlineShop.EFCore.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SellerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BuyerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OnlineShopUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -243,19 +242,6 @@ namespace OnlineShop.EFCore.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OrderHeader_AspNetUsers_OnlineShopUserId",
-                        column: x => x.OnlineShopUserId,
-                        principalSchema: "UserManagement",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_OrderHeader_AspNetUsers_SellerId",
-                        column: x => x.SellerId,
-                        principalSchema: "UserManagement",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -268,6 +254,7 @@ namespace OnlineShop.EFCore.Migrations
                     SellerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedDateGregorian = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedDatePersian = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -341,8 +328,8 @@ namespace OnlineShop.EFCore.Migrations
             migrationBuilder.InsertData(
                 schema: "UserManagement",
                 table: "AspNetUsers",
-                columns: new[] { "Id", "CellPhone", "ConcurrencyStamp", "CreatedDateGregorian", "CreatedDatePersian", "Email", "EmailConfirmed", "FirstName", "IsCellPhoneConfirmed", "IsNationalIdConfirmed", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "ModifyDateGregorian", "ModifyDatePersian", "NationalId", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "Picture", "SecurityStamp", "SoftDeleteDateGregorian", "SoftDeleteDatePersian", "UserName" },
-                values: new object[] { "1", "09120000000", "6de8ae29-db0a-4d11-b36e-9b6300568762", new DateTime(2024, 5, 24, 18, 55, 4, 591, DateTimeKind.Local).AddTicks(2305), "1403/3/4 18:55:04.5912340", "Shahbazi.amh@gmail.com", true, "Amir", true, true, "Shahbazi", null, false, null, null, null, "0440000000", "SHAHBAZI.AMH@GMAIL.COM", "A.SHAHBAZI", "AQAAAAIAAYagAAAAEBsPaFbYCFgUpX4oZWXe7pe1Z36+F3So+gLwDppB5p23w3+ALQkozQJJVM17Ot2Dtw==", null, null, "971da074-48a9-4ee6-8f8d-223eededb906", null, null, "a.Shahbazi" });
+                columns: new[] { "Id", "CellPhone", "ConcurrencyStamp", "CreatedDateGregorian", "CreatedDatePersian", "Email", "EmailConfirmed", "FirstName", "IsActive", "IsCellPhoneConfirmed", "IsNationalIdConfirmed", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "ModifyDateGregorian", "ModifyDatePersian", "NationalId", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "Picture", "SecurityStamp", "SoftDeleteDateGregorian", "SoftDeleteDatePersian", "UserName" },
+                values: new object[] { "1", "09120000000", "7486e3a3-9d20-426f-bdbe-1c3f6822735e", new DateTime(2024, 6, 26, 23, 58, 37, 184, DateTimeKind.Local).AddTicks(9493), "1403/4/6 23:58:37.1849511", "Shahbazi.amh@gmail.com", true, "Amir", true, true, true, "Shahbazi", null, false, null, null, null, "0440000000", "SHAHBAZI.AMH@GMAIL.COM", "A.SHAHBAZI", "AQAAAAIAAYagAAAAEG21NjPmny+nDxmNBPZMo2id2om698HuM1OMeflxAFAkDF1KUg1sRxHSCgnL56yXfg==", null, null, "e2f8e41c-568c-43c1-ae3e-4deb7b6c95b5", null, null, "a.Shahbazi" });
 
             migrationBuilder.InsertData(
                 schema: "UserManagement",
@@ -385,29 +372,7 @@ namespace OnlineShop.EFCore.Migrations
                 name: "EmailIndex",
                 schema: "UserManagement",
                 table: "AspNetUsers",
-                column: "NormalizedEmail",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_CellPhone",
-                schema: "UserManagement",
-                table: "AspNetUsers",
-                column: "CellPhone",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_Email",
-                schema: "UserManagement",
-                table: "AspNetUsers",
-                column: "Email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_NationalId",
-                schema: "UserManagement",
-                table: "AspNetUsers",
-                column: "NationalId",
-                unique: true);
+                column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_UserName",
@@ -441,18 +406,6 @@ namespace OnlineShop.EFCore.Migrations
                 table: "OrderHeader",
                 column: "Code",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderHeader_OnlineShopUserId",
-                schema: "Sale",
-                table: "OrderHeader",
-                column: "OnlineShopUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderHeader_SellerId",
-                schema: "Sale",
-                table: "OrderHeader",
-                column: "SellerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Product_Code",

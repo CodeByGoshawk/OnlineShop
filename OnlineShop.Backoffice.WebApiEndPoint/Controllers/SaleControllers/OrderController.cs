@@ -60,7 +60,7 @@ public class OrderController(IOrderService orderService) : Controller
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
         var getOperationResponse = await _orderService.Delete(model);
-        return getOperationResponse.IsSuccessful ? Ok(getOperationResponse.ResultModel) : Problem(getOperationResponse.ErrorMessage, statusCode: (int)getOperationResponse.HttpStatusCode);
+        return getOperationResponse.IsSuccessful ? Ok(getOperationResponse.Message) : Problem(getOperationResponse.ErrorMessage, statusCode: (int)getOperationResponse.HttpStatusCode);
     }
 
     private void SetModelRequesterId(object model)

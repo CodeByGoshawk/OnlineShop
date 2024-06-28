@@ -126,6 +126,9 @@
   <data name="Error_BuyerNotFound" xml:space="preserve">
     <value>خریدار یافت نشد</value>
   </data>
+  <data name="Error_CannotSetProductCategoryChildsAsParent" xml:space="preserve">
+    <value>زیرشاخه را نمی توان به عنوان والد انتخاب کرد</value>
+  </data>
   <data name="Error_CategoryNotFound" xml:space="preserve">
     <value>دسته بندی انتخاب شده یافت نشد</value>
   </data>
@@ -144,11 +147,8 @@
   <data name="Error_InsertDataFailed" xml:space="preserve">
     <value>عملیات ناموفق</value>
   </data>
-  <data name="Error_NoPermissionToEditAdmins" xml:space="preserve">
-    <value>دسترسی تغییر کاربران ادمین را ندارید</value>
-  </data>
-  <data name="Error_NoPermissionToGetAdmins" xml:space="preserve">
-    <value>دسترسی دریافت اطلاعات کاربران ادمین را ندارید</value>
+  <data name="Error_NoAccessToAdminUsers" xml:space="preserve">
+    <value>به کاربران ادمین دسترسی ندارید</value>
   </data>
   <data name="Error_NullInputCode" xml:space="preserve">
     <value>کد باید مقدار داشته باشد</value>
@@ -233,6 +233,9 @@
   </data>
   <data name="Error_WrongBuyer" xml:space="preserve">
     <value>خریدار اشتباه است</value>
+  </data>
+  <data name="Error_WrongProductCategory" xml:space="preserve">
+    <value>دسته بندی وارد شده صحیح نیست</value>
   </data>
   <data name="Error_WrongSeller" xml:space="preserve">
     <value>فروشنده اشتباه است</value>

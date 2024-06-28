@@ -12,8 +12,8 @@ using OnlineShop.EFCore;
 namespace OnlineShop.EFCore.Migrations
 {
     [DbContext(typeof(OnlineShopDbContext))]
-    [Migration("20240613215446_002")]
-    partial class _002
+    [Migration("20240626202840_001")]
+    partial class _001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -351,7 +351,7 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.Property<string>("CellPhone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -424,7 +424,7 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.Property<string>("NationalId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .IsRequired()
@@ -472,17 +472,7 @@ namespace OnlineShop.EFCore.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CellPhone")
-                        .IsUnique();
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("NationalId")
-                        .IsUnique();
-
                     b.HasIndex("NormalizedEmail")
-                        .IsUnique()
                         .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
@@ -500,13 +490,13 @@ namespace OnlineShop.EFCore.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CellPhone = "09120000000",
-                            ConcurrencyStamp = "56bfb3a6-5d92-4de1-8f90-489e73898c5b",
-                            CreatedDateGregorian = new DateTime(2024, 6, 14, 1, 24, 43, 253, DateTimeKind.Local).AddTicks(1197),
-                            CreatedDatePersian = "1403/3/25 01:24:43.2531214",
+                            ConcurrencyStamp = "7486e3a3-9d20-426f-bdbe-1c3f6822735e",
+                            CreatedDateGregorian = new DateTime(2024, 6, 26, 23, 58, 37, 184, DateTimeKind.Local).AddTicks(9493),
+                            CreatedDatePersian = "1403/4/6 23:58:37.1849511",
                             Email = "Shahbazi.amh@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Amir",
-                            IsActive = false,
+                            IsActive = true,
                             IsCellPhoneConfirmed = true,
                             IsModified = false,
                             IsNationalIdConfirmed = true,
@@ -516,9 +506,9 @@ namespace OnlineShop.EFCore.Migrations
                             NationalId = "0440000000",
                             NormalizedEmail = "SHAHBAZI.AMH@GMAIL.COM",
                             NormalizedUserName = "A.SHAHBAZI",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDXTnz3FyzbuTJYOC2FpomWGEsywA3Gc7TZB5nKeLNfOpJmsSIGFDPg3zYhK1RPTYg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEG21NjPmny+nDxmNBPZMo2id2om698HuM1OMeflxAFAkDF1KUg1sRxHSCgnL56yXfg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "92abd87c-e5d8-46ff-aeb7-2eb26a5560d4",
+                            SecurityStamp = "e2f8e41c-568c-43c1-ae3e-4deb7b6c95b5",
                             TwoFactorEnabled = false,
                             UserName = "a.Shahbazi"
                         });

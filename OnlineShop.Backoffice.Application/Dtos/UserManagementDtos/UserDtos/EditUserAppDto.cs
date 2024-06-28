@@ -1,10 +1,11 @@
 ﻿using PublicTools.Attributes;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace OnlineShop.Backoffice.Application.Dtos.UserManagementDtos.UserDtos;
 public class EditUserAppDto
 {
-    [Required]
+    [Required, JsonPropertyName("Id")]
     public string UserToEditId { get; set; }
 
     [Required]

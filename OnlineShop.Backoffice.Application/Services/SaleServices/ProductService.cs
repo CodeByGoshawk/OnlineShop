@@ -44,13 +44,13 @@ public class ProductService
         return new Response<GetProductResultAppDto>(result);
     }
 
-    public async Task<IResponse<GetProductResultAppDto>> GetWithPrivateData(GetProductAppDto model)
+    public async Task<IResponse<GetProductWithPrivateDataResultAppDto>> GetWithPrivateData(GetProductAppDto model)
     {
-        if (model is null) return new Response<GetProductResultAppDto>(MessageResource.Error_NullInputModel);
+        if (model is null) return new Response<GetProductWithPrivateDataResultAppDto>(MessageResource.Error_NullInputModel);
         var selectProductResponse = await _productRepository.SelectByIdAsync(model.Id);
-        if (!selectProductResponse.IsSuccessful) return new Response<GetProductResultAppDto>(selectProductResponse.ErrorMessage!);
+        if (!selectProductResponse.IsSuccessful) return new Response<GetProductWithPrivateDataResultAppDto>(selectProductResponse.ErrorMessage!);
 
-        var result = new GetProductResultAppDto
+        var result = new GetProductWithPrivateDataResultAppDto
         {
             Id = selectProductResponse.ResultModel!.Id,
             SellerId = selectProductResponse.ResultModel.SellerId,
@@ -69,19 +69,19 @@ public class ProductService
             SoftDeleteDateGregorian = selectProductResponse.ResultModel.SoftDeleteDateGregorian,
             SoftDeleteDatePersian = selectProductResponse.ResultModel.SoftDeleteDatePersian
         };
-        return new Response<GetProductResultAppDto>(result);
+        return new Response<GetProductWithPrivateDataResultAppDto>(result);
     }
 
-    public async Task<IResponse<GetProductsRangeResultAppDto>> GetAllWithPrivateData()
+    public async Task<IResponse<GetProductsRangeWithPrivateDataResultAppDto>> GetAllWithPrivateData()
     {
         var selectProductResponse = await _productRepository.SelectAllAsync();
-        if (!selectProductResponse.IsSuccessful) return new Response<GetProductsRangeResultAppDto>(selectProductResponse.ErrorMessage!);
+        if (!selectProductResponse.IsSuccessful) return new Response<GetProductsRangeWithPrivateDataResultAppDto>(selectProductResponse.ErrorMessage!);
 
-        var result = new GetProductsRangeResultAppDto();
+        var result = new GetProductsRangeWithPrivateDataResultAppDto();
 
         selectProductResponse.ResultModel!.ToList().ForEach(product =>
         {
-            var getResultDto = new GetProductResultAppDto
+            var getResultDto = new GetProductWithPrivateDataResultAppDto
             {
                 Id = product.Id,
                 SellerId = product.SellerId,
@@ -103,7 +103,7 @@ public class ProductService
             result.GetResultDtos.Add(getResultDto);
         });
 
-        return new Response<GetProductsRangeResultAppDto>(result);
+        return new Response<GetProductsRangeWithPrivateDataResultAppDto>(result);
     }
 
     public async Task<IResponse<GetProductsRangeResultAppDto>> GetRangeBySeller(GetProductsRangeBySellerAppDto model)
@@ -179,7 +179,7 @@ public class ProductService
         if (!(await _productCategoryRepository.SelectByIdAsync(model.ProductCategoryId)).IsSuccessful) return new Response(MessageResource.Error_CategoryNotFound);
         var selectProductResponse = await _productRepository.SelectNonDeletedByIdAsync(model.Id);
         if (!selectProductResponse.IsSuccessful || selectProductResponse.ResultModel!.SellerId != model.SellerId)
-            return new Response(selectProductResponse.ErrorMessage!);
+            return new Response(MessageResource.Error_UnauthorizedOwner);
         #endregion
 
         var updatedProduct = selectProductResponse.ResultModel;
@@ -202,11 +202,19 @@ public class ProductService
     {
         #region[Guards]
         if (model is null) return new Response(MessageResource.Error_NullInputModel);
+
+        var isAnyTypeOfAdmins = (await IsAnyTypeOfAdminsAsync(model.DeleterUserId!)).IsSuccessful;
+
         var selectProductResponse = await _productRepository.SelectNonDeletedByIdAsync(model.Id);
-        if (!selectProductResponse.IsSuccessful && (await IsAnyTypeOfAdminsAsync(model.DeleterUserId!)).IsSuccessful)
+        if (!selectProductResponse.IsSuccessful && isAnyTypeOfAdmins)
+        {
             return new Response(selectProductResponse.ErrorMessage!);
-        else if (!selectProductResponse.IsSuccessful || selectProductResponse.ResultModel!.SellerId != model.DeleterUserId)
+        }
+        else if (!selectProductResponse.IsSuccessful || 
+                (!isAnyTypeOfAdmins && selectProductResponse.ResultModel!.SellerId != model.DeleterUserId))
+        {
             return new Response(MessageResource.Error_UnauthorizedOwner);
+        }            
         #endregion
 
         var deletedProduct = selectProductResponse.ResultModel;

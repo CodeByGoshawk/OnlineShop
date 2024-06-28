@@ -20,33 +20,30 @@ public class UserService(UserManager<OnlineShopUser> userManager, IOrderReposito
         #region[Guards]
         if (model is null) return new Response<GetUserResultAppDto>(MessageResource.Error_NullInputModel);
 
-        var getterUser = await _userManager.FindByIdAsync(model.GetterUserId!);
-        var userToGet = await _userManager.FindByIdAsync(model.UserToGetId);
+        var user = await _userManager.FindByIdAsync(model.GetterUserId!);
 
-        var checkPermissionResponse = await CheckIfOperatorUserHasPermission(getterUser!, userToGet!);
-        if (!checkPermissionResponse.IsSuccessful) return new Response<GetUserResultAppDto>(checkPermissionResponse.ErrorMessage!);
         #endregion
 
         var getUserResultDto = new GetUserResultAppDto
         {
-            Id = userToGet.Id,
-            FirstName = userToGet.FirstName,
-            LastName = userToGet.LastName,
-            UserName = userToGet.UserName,
-            PhoneNumber = userToGet.PhoneNumber,
-            PhoneNumberConfirmed = userToGet.PhoneNumberConfirmed,
-            Email = userToGet.Email,
-            EmailConfirmed = userToGet.EmailConfirmed,
-            CellPhone = userToGet.CellPhone,
-            IsCellPhoneConfirmed = userToGet.IsCellPhoneConfirmed,
-            NationalId = userToGet.NationalId,
-            IsNationalIdConfirmed = userToGet.IsNationalIdConfirmed,
-            IsActive = userToGet.IsActive,
-            Location = userToGet.Location,
-            Picture = userToGet.Picture,
-            TwoFactorEnabled = userToGet.TwoFactorEnabled,
-            CreatedDateGregorian = userToGet.CreatedDateGregorian,
-            CreatedDatePersian = userToGet.CreatedDatePersian,
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            UserName = user.UserName,
+            PhoneNumber = user.PhoneNumber,
+            PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+            Email = user.Email,
+            EmailConfirmed = user.EmailConfirmed,
+            CellPhone = user.CellPhone,
+            IsCellPhoneConfirmed = user.IsCellPhoneConfirmed,
+            NationalId = user.NationalId,
+            IsNationalIdConfirmed = user.IsNationalIdConfirmed,
+            IsActive = user.IsActive,
+            Location = user.Location,
+            Picture = user.Picture,
+            TwoFactorEnabled = user.TwoFactorEnabled,
+            CreatedDateGregorian = user.CreatedDateGregorian,
+            CreatedDatePersian = user.CreatedDatePersian,
         };
         return new Response<GetUserResultAppDto>(getUserResultDto);
     } // Seller
@@ -59,7 +56,7 @@ public class UserService(UserManager<OnlineShopUser> userManager, IOrderReposito
         var getterUser = await _userManager.FindByIdAsync(model.GetterUserId!);
         var userToGet = await _userManager.FindByIdAsync(model.UserToGetId);
 
-        var checkPermissionResponse = await CheckIfOperatorUserHasPermission(getterUser!, userToGet!);
+        var checkPermissionResponse = await CheckIfRequesterUserHasPermission(getterUser!, userToGet!);
         if (!checkPermissionResponse.IsSuccessful) return new Response<GetUserWithPrivateDataResultAppDto>(checkPermissionResponse.ErrorMessage!);
         if (userToGet is null) return new Response<GetUserWithPrivateDataResultAppDto>(MessageResource.Error_UserNotFound);
         #endregion
@@ -113,9 +110,9 @@ public class UserService(UserManager<OnlineShopUser> userManager, IOrderReposito
             outOfAccessUsers.AddRange(await _userManager.GetUsersInRoleAsync(DatabaseConstants.DefaultRoles.AdminName));
         }
 
-        var usersToGet = _userManager.Users.Except(outOfAccessUsers);
+        var usersToGet = (await _userManager.Users.ToListAsync()).Except(outOfAccessUsers).ToList();
 
-        await usersToGet.ForEachAsync(async user =>
+        foreach(var user in usersToGet)
         {
             var getUserResultDto = new GetUserWithPrivateDataResultAppDto
             {
@@ -137,7 +134,7 @@ public class UserService(UserManager<OnlineShopUser> userManager, IOrderReposito
                 UserRoles = await _userManager.GetRolesAsync(user)
             };
             result.GetResultDtos.Add(getUserResultDto);
-        });
+        }
         return new Response<GetAllUsersWithPrivateDataResultAppDto>(result);
     } // Admins
 
@@ -196,7 +193,7 @@ public class UserService(UserManager<OnlineShopUser> userManager, IOrderReposito
         var editorUser = await _userManager.FindByIdAsync(model.EditorUserId!);
         var userToEdit = await _userManager.FindByIdAsync(model.UserToEditId);
 
-        var checkPermissionResponse = await CheckIfOperatorUserHasPermission(editorUser!, userToEdit!);
+        var checkPermissionResponse = await CheckIfRequesterUserHasPermission(editorUser!, userToEdit!);
         if (!checkPermissionResponse.IsSuccessful) return new Response(checkPermissionResponse.ErrorMessage!);
 
         var existingUser = await _userManager.Users.SingleOrDefaultAsync(user => user.NormalizedEmail == _userManager.NormalizeEmail(model.Email) && !user.IsSoftDeleted);
@@ -263,15 +260,15 @@ public class UserService(UserManager<OnlineShopUser> userManager, IOrderReposito
             return new Response(MessageResource.Error_UserIsGodAdmin);
         #endregion
 
-        var isAdminTask = _userManager.IsInRoleAsync(userToGrantOrRevoke, DatabaseConstants.DefaultRoles.AdminName);
-        var isSellerTask = _userManager.IsInRoleAsync(userToGrantOrRevoke, DatabaseConstants.DefaultRoles.SellerName);
+        var isAdmin = await _userManager.IsInRoleAsync(userToGrantOrRevoke, DatabaseConstants.DefaultRoles.AdminName);
+        var isSeller = await _userManager.IsInRoleAsync(userToGrantOrRevoke, DatabaseConstants.DefaultRoles.SellerName);
 
         IdentityResult grantOrRevokeResult = new();
-        if (await isAdminTask)
+        if (isAdmin)
         {
             grantOrRevokeResult = await _userManager.RemoveFromRoleAsync(userToGrantOrRevoke, DatabaseConstants.DefaultRoles.AdminName);
         }
-        else if (await isSellerTask)
+        else if (isSeller)
         {
             grantOrRevokeResult = await _userManager.RemoveFromRoleAsync(userToGrantOrRevoke, DatabaseConstants.DefaultRoles.SellerName);
             if (!grantOrRevokeResult.Succeeded) return new Response(string.Join(" ", grantOrRevokeResult.Errors.Select(e => e.Description)));
@@ -318,7 +315,7 @@ public class UserService(UserManager<OnlineShopUser> userManager, IOrderReposito
         var deleterUser = await _userManager.FindByIdAsync(model.DeleterUserId!);
         var userToDelete = await _userManager.FindByIdAsync(model.UserToDeleteId);
 
-        var checkPermissionResponse = await CheckIfOperatorUserHasPermission(deleterUser!, userToDelete!);
+        var checkPermissionResponse = await CheckIfRequesterUserHasPermission(deleterUser!, userToDelete!);
         if (!checkPermissionResponse.IsSuccessful) return new Response(checkPermissionResponse.ErrorMessage!);
 
         if (await _userManager.IsInRoleAsync(userToDelete!, DatabaseConstants.DefaultRoles.GodAdminName))
@@ -341,24 +338,24 @@ public class UserService(UserManager<OnlineShopUser> userManager, IOrderReposito
     //--------------------------------------------[Private Methods]--------------------------------------------//
 
 
-    private async Task<IResponse> CheckIfOperatorUserHasPermission(OnlineShopUser operatorUser, OnlineShopUser requestedUser)
+    private async Task<IResponse> CheckIfRequesterUserHasPermission(OnlineShopUser requesterUser, OnlineShopUser requestedUser)
     {
-        if (operatorUser != requestedUser)
+        if (requesterUser != requestedUser)
         {
-            if (!(await IsAnyTypeOfAdminsAsync(operatorUser!)).IsSuccessful)
+            if (!(await IsAnyTypeOfAdminsAsync(requesterUser!)).IsSuccessful)
                 return new Response(MessageResource.Error_UnauthorizedOwner);
 
             if (requestedUser is null || requestedUser.IsSoftDeleted)
                 return new Response(MessageResource.Error_UserNotFound);
 
             if (await _userManager.IsInRoleAsync(requestedUser, DatabaseConstants.DefaultRoles.GodAdminName))
-                return new Response(MessageResource.Error_NoPermissionToEditAdmins);
+                return new Response(MessageResource.Error_NoAccessToAdminUsers);
 
             if (await _userManager.IsInRoleAsync(requestedUser!, DatabaseConstants.DefaultRoles.AdminName) &&
-                !await _userManager.IsInRoleAsync(operatorUser!, DatabaseConstants.DefaultRoles.GodAdminName))
-                return new Response(MessageResource.Error_NoPermissionToEditAdmins);
+                !await _userManager.IsInRoleAsync(requesterUser!, DatabaseConstants.DefaultRoles.GodAdminName))
+                return new Response(MessageResource.Error_NoAccessToAdminUsers);
         }
-        return new Response(true);
+        return requestedUser.IsSoftDeleted ? new Response(MessageResource.Error_UserNotFound) : new Response(true);
     }
 
     private async Task<IResponse> IsAnyTypeOfAdminsAsync(OnlineShopUser user)

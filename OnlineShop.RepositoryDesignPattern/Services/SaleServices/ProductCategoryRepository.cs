@@ -17,4 +17,9 @@ public class ProductCategoryRepository(OnlineShopDbContext dbContext) : BaseRepo
             .SingleOrDefaultAsync(pc => pc.Id == id);
         return entity is not null ? new Response<ProductCategory>(entity) : new Response<ProductCategory>(MessageResource.Error_FindEntityFailed);
     }
+
+    public IResponse<IQueryable<ProductCategory>> SelectAll()
+    {
+        return new Response<IQueryable<ProductCategory>>(_dbSet);
+    }
 }

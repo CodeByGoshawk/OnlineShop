@@ -88,6 +88,15 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to زیرشاخه را نمی توان به عنوان والد انتخاب کرد.
+        /// </summary>
+        public static string Error_CannotSetProductCategoryChildsAsParent {
+            get {
+                return ResourceManager.GetString("Error_CannotSetProductCategoryChildsAsParent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to دسته بندی انتخاب شده یافت نشد.
         /// </summary>
         public static string Error_CategoryNotFound {
@@ -142,20 +151,11 @@ namespace PublicTools.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to دسترسی تغییر کاربران ادمین را ندارید.
+        ///   Looks up a localized string similar to به کاربران ادمین دسترسی ندارید.
         /// </summary>
-        public static string Error_NoPermissionToEditAdmins {
+        public static string Error_NoAccessToAdminUsers {
             get {
-                return ResourceManager.GetString("Error_NoPermissionToEditAdmins", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to دسترسی دریافت اطلاعات کاربران ادمین را ندارید.
-        /// </summary>
-        public static string Error_NoPermissionToGetAdmins {
-            get {
-                return ResourceManager.GetString("Error_NoPermissionToGetAdmins", resourceCulture);
+                return ResourceManager.GetString("Error_NoAccessToAdminUsers", resourceCulture);
             }
         }
         
@@ -408,6 +408,15 @@ namespace PublicTools.Resources {
         public static string Error_WrongBuyer {
             get {
                 return ResourceManager.GetString("Error_WrongBuyer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to دسته بندی وارد شده صحیح نیست.
+        /// </summary>
+        public static string Error_WrongProductCategory {
+            get {
+                return ResourceManager.GetString("Error_WrongProductCategory", resourceCulture);
             }
         }
         

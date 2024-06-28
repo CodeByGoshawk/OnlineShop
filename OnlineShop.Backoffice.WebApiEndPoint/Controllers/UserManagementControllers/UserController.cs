@@ -15,12 +15,11 @@ public class UserController(IUserService userService) : Controller
 {
     private readonly IUserService _userService = userService;
 
-    [Authorize(Roles = "Seller")]
-    [HttpGet("Get")]
-    public async Task<IActionResult> Get([FromBody] GetUserAppDto model)
+    [Authorize]
+    [HttpGet("GetSelf")]
+    public async Task<IActionResult> Get()
     {
-        if (model is null) return Json(MessageResource.Error_NullInputModel);
-
+        var model = new GetUserAppDto();
         SetModelRequesterId(model);
 
         var getOperationResponse = await _userService.Get(model);
@@ -32,6 +31,9 @@ public class UserController(IUserService userService) : Controller
     public async Task<IActionResult> GetWithPrivateData([FromBody] GetUserAppDto model)
     {
         if (model is null) return Json(MessageResource.Error_NullInputModel);
+
+        SetModelRequesterId(model);
+
         var getOperationResponse = await _userService.GetWithPrivateData(model);
         return getOperationResponse.IsSuccessful ? Ok(getOperationResponse.ResultModel) : Problem(getOperationResponse.ErrorMessage, statusCode: (int)getOperationResponse.HttpStatusCode);
     }
@@ -40,7 +42,8 @@ public class UserController(IUserService userService) : Controller
     [HttpGet("GetAllWithPrivateData")]
     public async Task<IActionResult> GetAllWithPrivateData()
     {
-        var model = new GetAllUsersAppDto { GetterUserId = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Sid)!.Value };
+        var model = new GetAllUsersAppDto();
+        SetModelRequesterId(model);
 
         var getAllOperationResponse = await _userService.GetAllWithPrivateData(model);
         return getAllOperationResponse.IsSuccessful ? Ok(getAllOperationResponse.ResultModel!.GetResultDtos) : Problem(getAllOperationResponse.ErrorMessage, statusCode: 406);
@@ -78,7 +81,7 @@ public class UserController(IUserService userService) : Controller
         return postOperationResponse.IsSuccessful ? Ok(postOperationResponse.Message) : Problem(postOperationResponse.ErrorMessage, statusCode: (int)postOperationResponse.HttpStatusCode);
     }
 
-    [Authorize(Roles = "GodAdmin")]
+    [Authorize(Roles = DatabaseConstants.DefaultRoles.GodAdminName)]
     [HttpPut("GrantOrRevokeAdminRole")]
     public async Task<IActionResult> GrantOrRevokeAdminRole([FromBody] GrantOrRevokeRoleAppDto model)
     {

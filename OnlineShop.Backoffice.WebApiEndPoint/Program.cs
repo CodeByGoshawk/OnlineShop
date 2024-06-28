@@ -45,10 +45,10 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.Configure<IdentityOptions>(c =>
 {
-    c.Password.RequireDigit = false;
-    c.Password.RequireLowercase = false;
-    c.Password.RequireNonAlphanumeric = false;
-    c.Password.RequiredLength = 3;
+    c.Password.RequireDigit = true;
+    c.Password.RequireLowercase = true;
+    c.Password.RequireNonAlphanumeric = true;
+    c.Password.RequiredLength = 8;
 });
 
 builder.Services.AddAuthorizationBuilder()

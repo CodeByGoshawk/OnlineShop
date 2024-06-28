@@ -3,7 +3,6 @@
 namespace OnlineShop.Backoffice.Application.Dtos.UserManagementDtos.UserDtos;
 public class GetUserWithPrivateDataResultAppDto
 {
-    [RequesterId]
     public string? Id { get; set; }
     public string? UserName { get; set; }
 

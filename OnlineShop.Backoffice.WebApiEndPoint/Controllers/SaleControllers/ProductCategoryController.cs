@@ -7,13 +7,12 @@ using PublicTools.Resources;
 
 namespace OnlineShop.Backoffice.WebApiEndPoint.Controllers.SaleControllers;
 
-[ApiController]
+[ApiController,Authorize]
 [Route("api/ProductCategory")]
 public class ProductCategoryController(IProductCategoryService productCategoryService) : Controller
 {
     private readonly IProductCategoryService _productCategoryService = productCategoryService;
 
-    [Authorize]
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -21,7 +20,6 @@ public class ProductCategoryController(IProductCategoryService productCategorySe
         return getAllOperationResponse.IsSuccessful ? Ok(getAllOperationResponse.ResultModel.GetResultDtos) : Problem(getAllOperationResponse.ErrorMessage, statusCode: (int)getAllOperationResponse.HttpStatusCode);
     }
 
-    [Authorize]
     [HttpGet("Get")]
     public async Task<IActionResult> Get([FromBody] GetProductCategoryAppDto model)
     {

@@ -37,8 +37,8 @@ public static class DatabaseConstants
         public const string ShahbaziFirstName = "Amir";
         public const string ShahbaziLastName = "Shahbazi";
         public const string ShahbaziNationalId = "0440000000";
-        public const string ShahbaziUserName = "a.Shahbazi";
-        public const string ShahbaziPassword = "Amir12345";
+        public const string ShahbaziUserName = "GodAdmin";
+        public const string ShahbaziPassword = "Aa@12345";
         public const string ShahbaziCellPhone = "09120000000";
         public const string ShahbaziEmail = "Shahbazi.amh@gmail.com";
     }

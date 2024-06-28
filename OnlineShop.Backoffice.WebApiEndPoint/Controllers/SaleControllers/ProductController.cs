@@ -22,7 +22,7 @@ public class ProductController(IProductService productService) : Controller
         return getAllOperationResponse.IsSuccessful ? Ok(getAllOperationResponse.ResultModel!.GetResultDtos) : Problem(getAllOperationResponse.ErrorMessage, statusCode: 406);
     }
 
-    [Authorize(Roles = "Seller")]
+    [Authorize(Roles = DatabaseConstants.DefaultRoles.SellerName)]
     [HttpGet("GetSelfProducts")]
     public async Task<IActionResult> GetRangeBySeller()
     {
@@ -42,7 +42,7 @@ public class ProductController(IProductService productService) : Controller
         return getOperationResponse.IsSuccessful ? Ok(getOperationResponse.ResultModel) : Problem(getOperationResponse.ErrorMessage, statusCode: (int)getOperationResponse.HttpStatusCode);
     }
 
-    [Authorize(Roles = "Seller")]
+    [Authorize(Roles = DatabaseConstants.DefaultRoles.SellerName)]
     [HttpGet("Get")]
     public async Task<IActionResult> Get([FromBody] GetProductAppDto model)
     {
@@ -54,7 +54,7 @@ public class ProductController(IProductService productService) : Controller
         return getOperationResponse.IsSuccessful ? Ok(getOperationResponse.ResultModel) : Problem(getOperationResponse.ErrorMessage, statusCode: (int)getOperationResponse.HttpStatusCode);
     }
 
-    [Authorize(Roles = "Seller")]
+    [Authorize(Roles = DatabaseConstants.DefaultRoles.SellerName)]
     [HttpPost("Post")]
     public async Task<IActionResult> Post([FromBody] PostProductAppDto model)
     {
@@ -66,7 +66,7 @@ public class ProductController(IProductService productService) : Controller
         return postOperationResponse.IsSuccessful ? Ok(postOperationResponse.Message) : Problem(postOperationResponse.ErrorMessage, statusCode: (int)postOperationResponse.HttpStatusCode);
     }
 
-    [Authorize(Roles = "Seller")]
+    [Authorize(Roles = DatabaseConstants.DefaultRoles.SellerName)]
     [HttpPut("Put")]
     public async Task<IActionResult> Put([FromBody] PutProductAppDto model)
     {

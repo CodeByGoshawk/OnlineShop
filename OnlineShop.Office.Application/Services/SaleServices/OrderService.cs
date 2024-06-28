@@ -110,7 +110,7 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
             if (orderDetailDto.Quantity <= 0) return new Response(MessageResource.Error_ZeroOrLessQuantity);
 
             var selectProductResponse = await _productRepository.SelectByIdAsync(orderDetailDto.ProductId);
-            if (!selectProductResponse.IsSuccessful) return new Response(MessageResource.Error_ProductNotFound);
+            if (!selectProductResponse.IsSuccessful || selectProductResponse.ResultModel!.IsSoftDeleted) return new Response(MessageResource.Error_ProductNotFound);
             var orderDetailProduct = selectProductResponse.ResultModel;
 
             var orderDetail = new OrderDetail
@@ -154,7 +154,7 @@ public class OrderService(IOrderRepository orderRepository, IProductRepository p
             if (orderDetailDto.Quantity <= 0) return new Response(MessageResource.Error_ZeroOrLessQuantity);
 
             var selectProductResponse = await _productRepository.SelectByIdAsync(orderDetailDto.ProductId);
-            if (!selectProductResponse.IsSuccessful) return new Response(MessageResource.Error_ProductNotFound);
+            if (!selectProductResponse.IsSuccessful || selectProductResponse.ResultModel!.IsSoftDeleted) return new Response(MessageResource.Error_ProductNotFound);
             var orderDetailProduct = selectProductResponse.ResultModel;
 
             var orderDetail = new OrderDetail
